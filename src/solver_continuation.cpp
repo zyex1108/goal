@@ -14,7 +14,7 @@ static RCP<ParameterList> get_valid_params()
   p->set<std::string>("solver type", "");
   p->set<double>("initial time", 0.0);
   p->set<double>("step size", 0.0);
-  p->set<unsigned>("num steps", 1);
+  p->set<unsigned>("num steps", 0);
   p->sublist("mesh");
   p->sublist("mechanics");
   return p;
