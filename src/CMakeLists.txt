@@ -19,6 +19,7 @@ state_fields.hpp
 mechanics.hpp
 solver.hpp
 solver_continuation.hpp
+solver_trapezoid.hpp
 )
 
 set(SOURCES
@@ -32,6 +33,7 @@ state_fields.cpp
 mechanics.cpp
 solver.cpp
 solver_continuation.cpp
+solver_trapezoid.cpp
 )
 
 add_library(goallib ${SOURCES} ${HEADERS})
