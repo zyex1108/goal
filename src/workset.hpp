@@ -1,5 +1,5 @@
-#ifndef troy_workset_hpp
-#define troy_workset_hpp
+#ifndef goal_workset_hpp
+#define goal_workset_hpp
 
 #include "data_types.hpp"
 #include <Teuchos_RCP.hpp>
@@ -21,6 +21,9 @@ struct workset
   RCP<MultiVector> u;
   RCP<Vector> r;
   RCP<Matrix> J;
+  double alpha;
+  double beta;
+  double gamma;
   std::vector<apf::MeshEntity*> ents;
 };
 
