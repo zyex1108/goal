@@ -14,9 +14,13 @@ control.hpp
 dimension.hpp
 layouts.hpp
 traits.hpp
+workset.hpp
 mesh.hpp
+solution_info.hpp
 state_fields.hpp
 mechanics.hpp
+primal_problem.hpp
+ev_basis_functions.hpp
 solver.hpp
 solver_continuation.hpp
 solver_trapezoid.hpp
@@ -29,8 +33,12 @@ control.cpp
 dimension.cpp
 layouts.cpp
 mesh.cpp
+solution_info.cpp
 state_fields.cpp
 mechanics.cpp
+mechanics_volumetric.cpp
+primal_problem.cpp
+ev_basis_functions.cpp
 solver.cpp
 solver_continuation.cpp
 solver_trapezoid.cpp
