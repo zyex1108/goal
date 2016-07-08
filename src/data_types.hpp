@@ -16,7 +16,7 @@ namespace goal {
 typedef double ST;
 typedef int LO;
 typedef long long GO;
-typedef Sacado::Fad::SLFad<ST, TROY_FAD_SIZE> FadType;
+typedef Sacado::Fad::SLFad<ST, GOAL_FAD_SIZE> FadType;
 typedef Teuchos::Comm<int> Comm;
 typedef Kokkos::Compat::KokkosDeviceWrapperNode<PHX::Device> KNode;
 typedef Tpetra::Map<LO, GO, KNode> Map;
