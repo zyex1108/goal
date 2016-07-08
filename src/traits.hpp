@@ -47,4 +47,14 @@ struct eval_scalar_types<goal::GoalTraits::Jacobian>
 
 }
 
+#define GOAL_INSTANTIATE_RESIDUAL(name) \
+  template class name<goal::GoalTraits::Residual, goal::GoalTraits>;
+
+#define GOAL_INSTANTIATE_JACOBIAN(name) \
+  template class name<goal::GoalTraits::Jacobian, goal::GoalTraits>;
+
+#define GOAL_INSTANTIATE_ALL(name) \
+  GOAL_INSTANTIATE_RESIDUAL(name) \
+  GOAL_INSTANTIATE_JACOBIAN(name)
+
 #endif
