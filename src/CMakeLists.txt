@@ -7,13 +7,31 @@ ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 set(HEADERS
+data_types.hpp
 expression.hpp
+assert_param.hpp
 control.hpp
+dimension.hpp
+layouts.hpp
+traits.hpp
+mesh.hpp
+state_fields.hpp
+mechanics.hpp
+solver.hpp
+solver_continuation.hpp
 )
 
 set(SOURCES
 expression.cpp
+assert_param.cpp
 control.cpp
+dimension.cpp
+layouts.cpp
+mesh.cpp
+state_fields.cpp
+mechanics.cpp
+solver.cpp
+solver_continuation.cpp
 )
 
 add_library(goallib ${SOURCES} ${HEADERS})
