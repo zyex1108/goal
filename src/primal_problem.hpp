@@ -29,6 +29,8 @@ class PrimalProblem
 
     void set_time(double current, double previous);
 
+    void set_coeffs(double alpha, double beta, double gamma);
+
     void solve();
 
   private:
@@ -40,6 +42,10 @@ class PrimalProblem
 
     double t_new;
     double t_old;
+
+    double alpha;
+    double beta;
+    double gamma;
 
     double tolerance;
     double max_iters;
