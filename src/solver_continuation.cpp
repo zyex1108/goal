@@ -1,6 +1,8 @@
 #include "solver_continuation.hpp"
 #include "mesh.hpp"
 #include "mechanics.hpp"
+#include "solution_info.hpp"
+#include "primal_problem.hpp"
 #include "assert_param.hpp"
 #include "control.hpp"
 
@@ -17,6 +19,7 @@ static RCP<ParameterList> get_valid_params()
   p->set<unsigned>("num steps", 0);
   p->sublist("mesh");
   p->sublist("mechanics");
+  p->sublist("linear algebra");
   return p;
 }
 
@@ -36,12 +39,16 @@ SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
 {
   print("--- continuation solver ---");
   validate_params(params);
+  bool enable_dynamics = false;
   mesh = mesh_create(params);
-  mechanics = mechanics_create(params, mesh, false);
+  mechanics = mechanics_create(params, mesh, enable_dynamics);
+  sol_info = sol_info_create(mesh, enable_dynamics);
+  primal = primal_create(params, mesh, mechanics, sol_info);
 }
 
 void SolverContinuation::solve()
 {
+  primal->solve();
 }
 
 }

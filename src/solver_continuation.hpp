@@ -7,6 +7,8 @@ namespace goal {
 
 class Mesh;
 class Mechanics;
+class SolutionInfo;
+class PrimalProblem;
 
 class SolverContinuation : public Solver
 {
@@ -17,6 +19,8 @@ class SolverContinuation : public Solver
     RCP<const ParameterList> params;
     RCP<Mesh> mesh;
     RCP<Mechanics> mechanics;
+    RCP<SolutionInfo> sol_info;
+    RCP<PrimalProblem> primal;
 };
 
 }
