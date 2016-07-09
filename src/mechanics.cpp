@@ -73,6 +73,22 @@ void Mechanics::set_error()
 void Mechanics::build_primal()
 {
   print("building primal pde fields");
+  set_primal();
+  typedef GoalTraits::Residual R;
+  typedef GoalTraits::Jacobian J;
+  pfms.resize(mesh->get_num_elem_sets());
+  for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
+    pfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
+    std::string const& set = mesh->get_elem_set_name(i);
+    register_volumetric<R>(set, pfms[i]);
+    register_volumetric<J>(set, pfms[i]);
+  }
+  nfm = rcp(new PHX::FieldManager<GoalTraits>);
+  dfm = rcp(new PHX::FieldManager<GoalTraits>);
+  register_neumann<R>(nfm);
+  register_neumann<J>(nfm);
+  register_dirichlet<R>(dfm);
+  register_dirichlet<J>(dfm);
 }
 
 void Mechanics::build_dual()
