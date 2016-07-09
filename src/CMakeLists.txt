@@ -37,6 +37,8 @@ solution_info.cpp
 state_fields.cpp
 mechanics.cpp
 mechanics_volumetric.cpp
+mechanics_neumann.cpp
+mechanics_dirichlet.cpp
 primal_problem.cpp
 ev_basis_functions.cpp
 solver.cpp
