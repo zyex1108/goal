@@ -2,6 +2,7 @@
 #include "mesh.hpp"
 #include "layouts.hpp"
 #include "workset.hpp"
+#include "traits.hpp"
 
 #include <apf.h>
 #include <apfMesh2.h>
@@ -20,5 +21,7 @@ PHX_POST_REGISTRATION_SETUP(BasisFunctions, data, fm)
 PHX_EVALUATE_FIELDS(BasisFunctions, workset)
 {
 }
+
+GOAL_INSTANTIATE_ALL(BasisFunctions)
 
 }
