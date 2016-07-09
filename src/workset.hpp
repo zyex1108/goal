@@ -12,7 +12,7 @@ namespace goal {
 
 using Teuchos::RCP;
 
-struct workset
+struct Workset
 {
   unsigned size;
   std::string set;
