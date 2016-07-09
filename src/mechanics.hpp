@@ -41,6 +41,10 @@ class Mechanics
 
     Teuchos::Array<std::string> const& get_dof_names();
 
+    FieldManagers get_primal() {return pfms;}
+    FieldManager get_dirichlet() {return dfm;}
+    FieldManager get_neumann() {return nfm;}
+
   private:
 
     RCP<const ParameterList> params;
@@ -71,6 +75,12 @@ class Mechanics
 
     template <typename EvalT>
     void register_volumetric(std::string const& set, FieldManager fm);
+
+    template <typename EvalT>
+    void register_neumann(FieldManager fm);
+
+    template <typename EvalT>
+    void register_dirichlet(FieldManager fm);
 
 };
 
