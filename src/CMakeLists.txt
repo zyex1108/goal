@@ -21,6 +21,7 @@ state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
 ev_basis_functions.hpp
+ev_gather_solution.hpp
 solver.hpp
 solver_continuation.hpp
 solver_trapezoid.hpp
@@ -41,6 +42,7 @@ mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
 ev_basis_functions.cpp
+ev_gather_solution.cpp
 solver.cpp
 solver_continuation.cpp
 solver_trapezoid.cpp
