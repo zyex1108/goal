@@ -8,6 +8,15 @@
 namespace goal {
 
 template <typename ScalarT>
+void get_field(
+    std::string const& name,
+    RCP<Layouts> dl,
+    PHX::MDField<ScalarT,Elem,Node>& f)
+{
+  f = PHX::MDField<ScalarT,Elem,Node>(name,dl->node_scalar);
+}
+
+template <typename ScalarT>
 void get_grad_field(
     PHX::MDField<ScalarT, Elem, Node, QP> f,
     RCP<Layouts> dl,
