@@ -40,6 +40,8 @@ class Mechanics
     void update_state();
 
     Teuchos::Array<std::string> const& get_dof_names();
+    Teuchos::Array<std::string> const& get_dof_dot_names();
+    Teuchos::Array<std::string> const& get_dof_dot_dot_names();
 
     FieldManagers get_primal() {return pfms;}
     FieldManager get_dirichlet() {return dfm;}
@@ -51,6 +53,7 @@ class Mechanics
     RCP<Mesh> mesh;
 
     bool supports_dynamics;
+    bool have_pressure_eq;
 
     bool is_primal;
     bool is_dual;
@@ -59,6 +62,9 @@ class Mechanics
     unsigned num_eqs;
 
     Teuchos::Array<std::string> dof_names;
+    Teuchos::Array<std::string> dof_dot_names;
+    Teuchos::Array<std::string> dof_dot_dot_names;
+
     std::map<std::string, unsigned> dof_offsets;
     std::map<std::string, Teuchos::Array<std::string> > fields;
 

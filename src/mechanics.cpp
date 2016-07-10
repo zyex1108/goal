@@ -10,6 +10,7 @@ static RCP<ParameterList> get_valid_params(RCP<Mesh> m)
 {
   RCP<ParameterList> p = rcp(new ParameterList);
   p->set<std::string>("model", "");
+  p->set<bool>("mixed formulation", false);
   p->sublist("dirichlet bcs");
   p->sublist("neumann bcs");
   for (unsigned i=0; i < m->get_num_elem_sets(); ++i) {
@@ -37,6 +38,8 @@ Mechanics::Mechanics(
   supports_dynamics(support)
 {
   validate_params(params, mesh);
+  model = params->get<std::string>("model");
+  have_pressure_eq = params->get<bool>("mixed formulation");
   setup_dofs();
   setup_fields();
   setup_states();
@@ -46,7 +49,7 @@ Mechanics::Mechanics(
 
 unsigned Mechanics::get_num_eqs()
 {
-  return dof_names.size();
+  return num_eqs;
 }
 
 void Mechanics::set_primal()
@@ -109,32 +112,82 @@ void Mechanics::update_state()
 {
 }
 
+Teuchos::Array<std::string> const& Mechanics::get_dof_names()
+{
+  return dof_names;
+}
+
+Teuchos::Array<std::string> const& Mechanics::get_dof_dot_names()
+{
+  return dof_dot_names;
+}
+
+Teuchos::Array<std::string> const& Mechanics::get_dof_dot_dot_names()
+{
+  return dof_dot_dot_names;
+}
+
 void Mechanics::setup_dofs()
 {
   unsigned d = mesh->get_num_dims();
+
   dof_names.push_back("ux");
   if (d > 1) dof_names.push_back("uy");
   if (d > 2) dof_names.push_back("uz");
-  dof_names.push_back("p");
+  if (supports_dynamics) {
+    dof_dot_names.push_back("vx");
+    if (d > 1) dof_dot_names.push_back("vy");
+    if (d > 2) dof_dot_names.push_back("vz");
+    dof_dot_dot_names.push_back("ax");
+    if (d > 1) dof_dot_dot_names.push_back("ay");
+    if (d > 2) dof_dot_dot_names.push_back("az");
+  }
+
+  if (have_pressure_eq) dof_names.push_back("p");
+  if (supports_dynamics) {
+    dof_dot_names.push_back("p_dot");
+    dof_dot_dot_names.push_back("p_dot_dot");
+  }
+
   for (unsigned i=0; i < dof_names.size(); ++i)
     dof_offsets[dof_names[i]] = i;
+
   num_eqs = dof_names.size();
 }
 
 void Mechanics::setup_fields()
 {
+  unsigned d = mesh->get_num_dims();
+
   Teuchos::Array<std::string> disp;
-  for (unsigned i=0; i < mesh->get_num_dims(); ++i)
-    disp.push_back(dof_names[i]);
+  disp.push_back("ux");
+  if (d > 1) disp.push_back("uy");
+  if (d > 1) disp.push_back("uz");
   fields["disp"] = disp;
-  Teuchos::Array<std::string> pressure;
-  pressure.push_back("p");
-  fields["pressure"] = pressure;
+
+  if (supports_dynamics) {
+    Teuchos::Array<std::string> vel;
+    vel.push_back("vx");
+    if (d > 1) vel.push_back("vy");
+    if (d > 2) vel.push_back("vz");
+    fields["vel"] = vel;
+
+    Teuchos::Array<std::string> acc;
+    acc.push_back("ax");
+    if (d > 1) acc.push_back("ay");
+    if (d > 2) acc.push_back("az");
+    fields["acc"] = acc;
+  }
+
+  if (have_pressure_eq) {
+    Teuchos::Array<std::string> p;
+    p.push_back("p");
+    fields["p"] = p;
+  }
 }
 
 void Mechanics::setup_states()
 {
-  model = params->get<std::string>("model");
   state_fields = rcp(new StateFields(mesh));
   if (model == "linear elastic")
     state_fields->add("cauchy", TENSOR, true);
