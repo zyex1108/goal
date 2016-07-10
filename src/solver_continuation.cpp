@@ -44,6 +44,7 @@ SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
   mechanics = mechanics_create(params, mesh, enable_dynamics);
   sol_info = sol_info_create(mesh, enable_dynamics);
   primal = primal_create(params, mesh, mechanics, sol_info);
+  primal->set_coeffs(0.0, 0.0, 1.0);
 }
 
 void SolverContinuation::solve()
