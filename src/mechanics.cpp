@@ -37,7 +37,8 @@ Mechanics::Mechanics(
   mesh(m),
   supports_dynamics(support),
   have_pressure_eq(false),
-  have_temperature(false)
+  have_temperature(false),
+  small_strain(true)
 {
   validate_params(params, mesh);
   setup_params();
