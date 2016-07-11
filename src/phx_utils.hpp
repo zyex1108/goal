@@ -56,6 +56,16 @@ void get_grad_field(
     ("grad_" + name, dl->node_qp_vector);
 }
 
+template <typename ScalarT>
+void get_resid_field(
+    std::string const& name,
+    RCP<Layouts> dl,
+    PHX::MDField<ScalarT, Elem, Node>& rf)
+{
+  rf = PHX::MDField<ScalarT, Elem, Node>
+    ("res_" + name, dl->node_scalar);
+}
+
 }
 
 #endif
