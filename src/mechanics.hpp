@@ -54,6 +54,7 @@ class Mechanics
 
     bool supports_dynamics;
     bool have_pressure_eq;
+    bool have_temperature;
 
     bool is_primal;
     bool is_dual;
@@ -75,6 +76,7 @@ class Mechanics
     FieldManager nfm;
     FieldManager dfm;
 
+    void setup_params();
     void setup_dofs();
     void setup_fields();
     void setup_states();

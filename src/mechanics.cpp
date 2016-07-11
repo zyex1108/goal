@@ -35,11 +35,12 @@ Mechanics::Mechanics(
     bool support) :
   params(p),
   mesh(m),
-  supports_dynamics(support)
+  supports_dynamics(support),
+  have_pressure_eq(false),
+  have_temperature(false)
 {
   validate_params(params, mesh);
-  model = params->get<std::string>("model");
-  have_pressure_eq = params->get<bool>("mixed formulation");
+  setup_params();
   setup_dofs();
   setup_fields();
   setup_states();
@@ -125,6 +126,15 @@ Teuchos::Array<std::string> const& Mechanics::get_dof_dot_names()
 Teuchos::Array<std::string> const& Mechanics::get_dof_dot_dot_names()
 {
   return dof_dot_dot_names;
+}
+
+void Mechanics::setup_params()
+{
+  model = params->get<std::string>("model");
+  if (params->isParameter("mixed formulation"))
+    have_pressure_eq = params->get<bool>("mixed formulation");
+  if (params->isParameter("temperature"))
+    have_temperature = true;
 }
 
 void Mechanics::setup_dofs()
