@@ -24,6 +24,7 @@ ev_basis_functions.hpp
 ev_gather_solution.hpp
 ev_dof_interpolation.hpp
 ev_kinematics.hpp
+ev_first_pk.hpp
 ev_model_elastic.hpp
 solver.hpp
 solver_continuation.hpp
@@ -48,6 +49,7 @@ ev_basis_functions.cpp
 ev_gather_solution.cpp
 ev_dof_interpolation.cpp
 ev_kinematics.cpp
+ev_first_pk.cpp
 ev_model_elastic.cpp
 solver.cpp
 solver_continuation.cpp
