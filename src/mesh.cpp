@@ -199,9 +199,21 @@ unsigned Mesh::get_num_worksets(const unsigned set_idx)
 }
 
 std::vector<apf::MeshEntity*> const& Mesh::get_elems(
-    std::string const& set, const unsigned ws_index)
+    std::string const& elem_set_idx, const unsigned ws_idx)
 {
-  return elem_sets[set][ws_index];
+  return elem_sets[elem_set_idx][ws_idx];
+}
+
+std::vector<apf::MeshEntity*> const& Mesh::get_facets(
+    std::string const& facet_set_idx)
+{
+  return facet_sets[facet_set_idx];
+}
+
+std::vector<apf::Node*> const& Mesh::get_nodes(
+    std::string const& node_set_idx)
+{
+  return node_sets[node_set_idx];
 }
 
 static GO get_dof(const GO node, const unsigned eq, const unsigned neq)
@@ -209,13 +221,25 @@ static GO get_dof(const GO node, const unsigned eq, const unsigned neq)
   return node*neq + eq;
 }
 
+/* prevent unneeded reallocation? */
+apf::NewArray<long> gids;
+
 LO Mesh::get_lid(apf::MeshEntity* e, const unsigned n, const unsigned eq)
 {
-  apf::NewArray<long> gids;
   apf::getElementNumbers(numbering, e, gids);
   GO dof = get_dof(gids[n], eq, num_eqs);
   LO lid = overlap_map->getLocalElement(dof);
   CHECK(lid >=0);
+  return lid;
+}
+
+LO Mesh::get_lid(apf::Node* node, const unsigned eq)
+{
+  CHECK(mesh->isOwned(node->entity));
+  long n = apf::getNumber(numbering, *node);
+  GO dof = get_dof(n, eq, num_eqs);
+  LO lid = owned_map->getLocalElement(dof);
+  CHECK(lid >= 0);
   return lid;
 }
 
