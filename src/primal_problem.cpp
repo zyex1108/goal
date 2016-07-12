@@ -262,8 +262,6 @@ void PrimalProblem::solve()
 {
   print("solving primal model");
   mechanics->set_primal();
-  compute_jacobian();
-  compute_residual();
   RCP<Matrix> J = sol_info->owned_jacobian;
   RCP<Vector> u = sol_info->owned_solution->getVectorNonConst(0);
   RCP<Vector> r = sol_info->owned_residual;
