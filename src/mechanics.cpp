@@ -160,10 +160,12 @@ void Mechanics::setup_dofs()
     if (d > 2) dof_dot_dot_names.push_back("az");
   }
 
-  if (have_pressure_eq) dof_names.push_back("p");
-  if (supports_dynamics) {
-    dof_dot_names.push_back("p_dot");
-    dof_dot_dot_names.push_back("p_dot_dot");
+  if (have_pressure_eq) {
+    dof_names.push_back("p");
+    if (supports_dynamics) {
+      dof_dot_names.push_back("p_dot");
+      dof_dot_dot_names.push_back("p_dot_dot");
+    }
   }
 
   for (unsigned i=0; i < dof_names.size(); ++i)
