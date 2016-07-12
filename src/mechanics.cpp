@@ -129,6 +129,12 @@ Teuchos::Array<std::string> const& Mechanics::get_dof_dot_dot_names()
   return dof_dot_dot_names;
 }
 
+unsigned Mechanics::get_offset(std::string const& dof_name)
+{
+  CHECK(dof_offsets.count(dof_name));
+  return dof_offsets[dof_name];
+}
+
 void Mechanics::setup_params()
 {
   model = params->get<std::string>("model");

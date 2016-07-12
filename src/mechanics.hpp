@@ -43,6 +43,8 @@ class Mechanics
     Teuchos::Array<std::string> const& get_dof_dot_names();
     Teuchos::Array<std::string> const& get_dof_dot_dot_names();
 
+    unsigned get_offset(std::string const& dof_name);
+
     FieldManagers get_primal() {return pfms;}
     FieldManager get_dirichlet() {return dfm;}
     FieldManager get_neumann() {return nfm;}
