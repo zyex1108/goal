@@ -28,6 +28,7 @@ ev_model_elastic.hpp
 ev_first_pk.hpp
 ev_mechanics_residual.hpp
 ev_scatter_residual.hpp
+ev_bc_dirichlet.hpp
 solver.hpp
 solver_continuation.hpp
 solver_trapezoid.hpp
@@ -55,6 +56,7 @@ ev_model_elastic.cpp
 ev_first_pk.cpp
 ev_mechanics_residual.cpp
 ev_scatter_residual.cpp
+ev_bc_dirichlet.cpp
 solver.cpp
 solver_continuation.cpp
 solver_trapezoid.cpp
