@@ -209,7 +209,7 @@ void Mechanics::setup_states()
 {
   state_fields = rcp(new StateFields(mesh));
   if (model == "linear elastic")
-    state_fields->add("cauchy", TENSOR, true);
+    state_fields->add("cauchy", TENSOR, false);
   else if (model == "J2") {
     state_fields->add("cauchy", TENSOR, true);
     state_fields->add("Fp", TENSOR, true, true);
