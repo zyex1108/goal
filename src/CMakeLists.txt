@@ -20,6 +20,7 @@ solution_info.hpp
 state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
+linear_solver.hpp
 ev_basis_functions.hpp
 ev_gather_solution.hpp
 ev_dof_interpolation.hpp
@@ -48,6 +49,7 @@ mechanics_volumetric.cpp
 mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
+linear_solver.cpp
 ev_basis_functions.cpp
 ev_gather_solution.cpp
 ev_dof_interpolation.cpp

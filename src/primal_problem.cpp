@@ -1,4 +1,5 @@
 #include "primal_problem.hpp"
+#include "linear_solver.hpp"
 #include "mesh.hpp"
 #include "mechanics.hpp"
 #include "solution_info.hpp"
@@ -263,8 +264,7 @@ void PrimalProblem::solve()
   mechanics->set_primal();
   compute_jacobian();
   compute_residual();
-#if 0
-  RCP<Matrix> J = solInfo->owned_jacobian;
+  RCP<Matrix> J = sol_info->owned_jacobian;
   RCP<Vector> u = sol_info->owned_solution->getVectorNonConst(0);
   RCP<Vector> r = sol_info->owned_residual;
   RCP<Vector> du = rcp(new Vector(mesh->get_owned_map()));
@@ -275,18 +275,17 @@ void PrimalProblem::solve()
     compute_jacobian();
     r->scale(-1.0);
     du->putScalar(0.0);
-    solveLinearSystem(params, J, du, r);
+    solve_linear_system(params, J, du, r);
     u->update(1.0, *du, 1.0);
     compute_residual();
     double norm = r->norm2();
     print("  ||r|| = %e", norm);
-    if (norm < tolerance) converged == true;
+    if (norm < tolerance) converged = true;
     iter++;
   }
   if ((iter > max_iters) && (!converged))
     fail("newton's method failed in %d iterations", max_iters);
   du = Teuchos::null;
-#endif
 }
 
 RCP<PrimalProblem> primal_create(
