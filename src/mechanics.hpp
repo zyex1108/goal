@@ -40,10 +40,8 @@ class Mechanics
     void update_state();
 
     Teuchos::Array<std::string> const& get_dof_names();
-    Teuchos::Array<std::string> const& get_dof_dot_names();
-    Teuchos::Array<std::string> const& get_dof_dot_dot_names();
-
-    unsigned get_offset(std::string const& dof_name);
+    Teuchos::Array<std::string> const& get_var_names(unsigned sol_idx);
+    unsigned get_offset(std::string const& var_name);
 
     FieldManagers get_primal() {return pfms;}
     FieldManager get_dirichlet() {return dfm;}
@@ -65,11 +63,8 @@ class Mechanics
 
     unsigned num_eqs;
 
-    Teuchos::Array<std::string> dof_names;
-    Teuchos::Array<std::string> dof_dot_names;
-    Teuchos::Array<std::string> dof_dot_dot_names;
-
-    std::map<std::string, unsigned> dof_offsets;
+    Teuchos::Array<std::string> var_names[3];
+    std::map<std::string, unsigned> offsets;
     std::map<std::string, Teuchos::Array<std::string> > fields;
 
     std::string model;
@@ -80,7 +75,7 @@ class Mechanics
     FieldManager dfm;
 
     void setup_params();
-    void setup_dofs();
+    void setup_variables();
     void setup_fields();
     void setup_states();
 

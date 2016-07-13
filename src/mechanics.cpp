@@ -42,7 +42,7 @@ Mechanics::Mechanics(
 {
   validate_params(params, mesh);
   setup_params();
-  setup_dofs();
+  setup_variables();
   setup_fields();
   setup_states();
   mesh->set_num_eqs(num_eqs);
@@ -116,23 +116,20 @@ void Mechanics::update_state()
 
 Teuchos::Array<std::string> const& Mechanics::get_dof_names()
 {
-  return dof_names;
+  return var_names[0];
 }
 
-Teuchos::Array<std::string> const& Mechanics::get_dof_dot_names()
+Teuchos::Array<std::string> const& Mechanics::get_var_names(unsigned i)
 {
-  return dof_dot_names;
+  if (i > 0) CHECK(supports_dynamics);
+  CHECK((i>=0) && (i<=2));
+  return var_names[i];
 }
 
-Teuchos::Array<std::string> const& Mechanics::get_dof_dot_dot_names()
+unsigned Mechanics::get_offset(std::string const& var_name)
 {
-  return dof_dot_dot_names;
-}
-
-unsigned Mechanics::get_offset(std::string const& dof_name)
-{
-  CHECK(dof_offsets.count(dof_name));
-  return dof_offsets[dof_name];
+  CHECK(offsets.count(var_name));
+  return offsets[var_name];
 }
 
 void Mechanics::setup_params()
@@ -144,34 +141,43 @@ void Mechanics::setup_params()
     have_temperature = true;
 }
 
-void Mechanics::setup_dofs()
+void Mechanics::setup_variables()
 {
   unsigned d = mesh->get_num_dims();
 
-  dof_names.push_back("ux");
-  if (d > 1) dof_names.push_back("uy");
-  if (d > 2) dof_names.push_back("uz");
+  var_names[0].push_back("ux");
+  if (d > 1) var_names[0].push_back("uy");
+  if (d > 2) var_names[0].push_back("uz");
   if (supports_dynamics) {
-    dof_dot_names.push_back("vx");
-    if (d > 1) dof_dot_names.push_back("vy");
-    if (d > 2) dof_dot_names.push_back("vz");
-    dof_dot_dot_names.push_back("ax");
-    if (d > 1) dof_dot_dot_names.push_back("ay");
-    if (d > 2) dof_dot_dot_names.push_back("az");
+    var_names[1].push_back("vx");
+    if (d > 1) var_names[1].push_back("vy");
+    if (d > 2) var_names[1].push_back("vz");
+    var_names[2].push_back("ax");
+    if (d > 1) var_names[2].push_back("ay");
+    if (d > 2) var_names[2].push_back("az");
   }
 
   if (have_pressure_eq) {
-    dof_names.push_back("p");
+    var_names[0].push_back("p");
     if (supports_dynamics) {
-      dof_dot_names.push_back("p_dot");
-      dof_dot_dot_names.push_back("p_dot_dot");
+      var_names[1].push_back("dp");
+      var_names[2].push_back("ddp");
     }
   }
 
-  for (unsigned i=0; i < dof_names.size(); ++i)
-    dof_offsets[dof_names[i]] = i;
+  if (supports_dynamics) {
+    CHECK(var_names[0].size() == var_names[1].size());
+    CHECK(var_names[1].size() == var_names[2].size());
+  }
 
-  num_eqs = dof_names.size();
+  for (unsigned i=0; i < var_names[0].size(); ++i)
+    offsets[var_names[0][i]] = i;
+  for (unsigned i=0; i < var_names[1].size(); ++i)
+    offsets[var_names[1][i]] = i;
+  for (unsigned i=0; i < var_names[2].size(); ++i)
+    offsets[var_names[2][i]] = i;
+
+  num_eqs = var_names[0].size();
 }
 
 void Mechanics::setup_fields()
