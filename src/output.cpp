@@ -1,12 +1,14 @@
 #include "output.hpp"
 #include "mesh.hpp"
 #include "mechanics.hpp"
+#include "solution_info.hpp"
 #include "control.hpp"
 #include "data_types.hpp"
 
 #include <PCU.h>
 #include <apf.h>
 #include <apfMesh2.h>
+#include <apfNumbering.h>
 
 namespace goal {
 
@@ -102,12 +104,56 @@ void Output::write_vtk(const double t)
   ++index;
 }
 
+static void attach_fields(
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    RCP<const Vector> u,
+    Teuchos::Array<std::string> const& names)
+{
+  ArrayRCP<const ST> data = u->get1dView();
+  apf::Mesh* m = mesh->get_apf_mesh();
+  apf::DynamicArray<apf::Node> nodes = mesh->get_apf_nodes();
+  std::vector<apf::Field*> fields;
+  for (unsigned j=0; j < names.size(); ++j) {
+    apf::Field* f = apf::createFieldOn(m, names[j].c_str(), apf::SCALAR);
+    fields.push_back(f);
+  }
+  for (unsigned i=0; i < nodes.size(); ++i) {
+    apf::Node* node = &(nodes[i]);
+    if (! m->isOwned(node->entity)) continue;
+    if (m->getType(node->entity) != apf::Mesh::VERTEX) continue;
+    for (unsigned j=0; j < names.size(); ++j) {
+      unsigned eq = mech->get_offset(names[j]);
+      LO row = mesh->get_lid(node, eq);
+      double v = data[row];
+      apf::setScalar(fields[j], node->entity, node->node, v);
+    }
+  }
+  for (unsigned j=0; j < names.size(); ++j)
+    apf::synchronize(fields[j]);
+}
+
+static void destroy_fields(
+    RCP<Mesh> mesh,
+    Teuchos::Array<std::string> const& names)
+{
+  apf::Mesh* m = mesh->get_apf_mesh();
+  for (unsigned i=0; i < names.size(); ++i) {
+    apf::Field* f = m->findField(names[i].c_str());
+    CHECK(f);
+    apf::destroyField(f);
+  }
+}
+
 void Output::write(const double t)
 {
   if (turn_off) return;
   static unsigned my_out_interval = 0;
   if (my_out_interval++ % out_interval) return;
+  RCP<const Vector> u = sol_info->owned_solution->getVector(0);
+  attach_fields(mesh, mechanics, u, mechanics->get_dof_names());
   write_vtk(t);
+  destroy_fields(mesh, mechanics->get_dof_names());
 }
 
 RCP<Output> output_create(
