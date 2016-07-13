@@ -3,6 +3,7 @@
 #include "mechanics.hpp"
 #include "solution_info.hpp"
 #include "primal_problem.hpp"
+#include "output.hpp"
 #include "assert_param.hpp"
 #include "control.hpp"
 
@@ -20,6 +21,7 @@ static RCP<ParameterList> get_valid_params()
   p->sublist("mesh");
   p->sublist("mechanics");
   p->sublist("linear algebra");
+  p->sublist("output");
   return p;
 }
 
@@ -31,11 +33,16 @@ static void validate_params(RCP<const ParameterList> p)
   assert_param(p, "num steps");
   assert_param(p, "mesh");
   assert_param(p, "mechanics");
+  assert_param(p, "output");
   p->validateParameters(*get_valid_params(), 0);
 }
 
 SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
-  params(p)
+  params(p),
+  t_old(0.0),
+  t_new(0.0),
+  dt(0.0),
+  num_steps(0)
 {
   print("--- continuation solver ---");
   validate_params(params);
@@ -44,12 +51,26 @@ SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
   mechanics = mechanics_create(params, mesh, enable_dynamics);
   sol_info = sol_info_create(mesh, enable_dynamics);
   primal = primal_create(params, mesh, mechanics, sol_info);
+  output = output_create(params, mesh, mechanics, sol_info);
   primal->set_coeffs(0.0, 0.0, 1.0);
+  t_old = params->get<double>("initial time");
+  dt = params->get<double>("step size");
+  num_steps = params->get<unsigned>("num steps");
+  t_new = t_old + dt;
 }
 
 void SolverContinuation::solve()
 {
-  primal->solve();
+  for (unsigned step=1; step <= num_steps; ++step) {
+    print("*** Continuation Step: (%u)", step);
+    print("*** from time:         %f", t_old);
+    print("*** to time:           %f", t_new);
+    primal->set_time(t_new, t_old);
+    primal->solve();
+    output->write(t_new);
+    t_old = t_new;
+    t_new = t_new + dt;
+  }
 }
 
 }
