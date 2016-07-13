@@ -72,14 +72,14 @@ void goal::Mechanics::register_volumetric(
   }
 
   /* gather and interpolate the solution vector */
-  register_solutions<EvalT>(dl, mesh, dof_names, 0, ev, fm);
+  register_solutions<EvalT>(dl, mesh, var_names[0], 0, ev, fm);
 
   if (supports_dynamics) {
     /* gather and interpolate the time derivative of the solution */
-    register_solutions<EvalT>(dl, mesh, dof_dot_names, 1, ev, fm);
+    register_solutions<EvalT>(dl, mesh, var_names[1], 1, ev, fm);
 
     /* gather and interpolate the 2nd time derivative of the solution */
-    register_solutions<EvalT>(dl, mesh, dof_dot_dot_names, 2, ev, fm);
+    register_solutions<EvalT>(dl, mesh, var_names[2], 2, ev, fm);
   }
 
   { /* kinematic quantities */
@@ -137,7 +137,7 @@ void goal::Mechanics::register_volumetric(
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
     p->set<RCP<Mesh> >("Mesh", mesh);
-    p->set<Teuchos::Array<std::string> >("DOF Names", dof_names);
+    p->set<Teuchos::Array<std::string> >("DOF Names", var_names[0]);
     ev = rcp(new ScatterResidual<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
     PHX::Tag<typename EvalT::ScalarT> tag("Scatter Residual", dl->dummy);
