@@ -1,10 +1,6 @@
-configure_file(config_in.hpp config.hpp)
-
-include_directories(
-${Trilinos_INCLUDE_DIRS}
-${Trilinos_TPL_INCLUDE_DIRS}
-${CMAKE_CURRENT_BINARY_DIR}
-)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.hpp")
 
 set(HEADERS
 data_types.hpp
@@ -66,13 +62,15 @@ solver_continuation.cpp
 solver_trapezoid.cpp
 )
 
-add_library(goallib ${SOURCES} ${HEADERS})
+add_library(goalie ${SOURCES})
+target_compile_definitions(goalie PUBLIC "-DGOAL_FAD_SIZE=${GOAL_FAD_SIZE}")
+target_include_directories(goalie PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+target_include_directories(goalie PUBLIC ${Trilinos_INCLUDE_DIRS})
+target_include_directories(goalie PUBLIC ${Trilinos_TPL_INCLUDE_DIRS})
+target_link_libraries(goalie PUBLIC scorec)
+target_link_libraries(goalie PUBLIC ${Trilinos_LIBRARIES})
+target_link_libraries(goalie PUBLIC ${Trilinos_TPL_LIBRARIES})
+target_link_libraries(goalie PUBLIC ${Trilinos_EXTRA_LD_FLAGS})
 
 add_executable(goal main.cpp)
-target_link_libraries(
-goal
-goallib
-${Trilinos_LIBRARIES}
-${Trilinos_TPL_LIBRARIES}
-${Trilinos_EXTRA_LD_FLAGS}
-)
+target_link_libraries(goal PRIVATE goalie)
