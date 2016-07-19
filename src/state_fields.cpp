@@ -46,7 +46,7 @@ void StateFields::add(const char* n, FieldType t, bool save, bool I)
     apf::Field* g = apf::createField(
         apf_mesh, oname.c_str(), apf_types[t], s);
     if (!I) apf::zeroField(g);
-    else set_identity(mesh, f, t);
+    else set_identity(mesh, g, t);
     states.push_back(g);
     old_states.push_back(g);
   }
