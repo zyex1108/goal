@@ -28,8 +28,11 @@ endfunction()
 
 generate(square 2)
 set(EX_MESHES ${EX_MESHES} square.smb)
+copy(square.txt)
+
 generate(kirsch 2)
 set(EX_MESHES ${EX_MESHES} kirsch.smb)
+copy(kirsch.txt)
 
 add_custom_target(meshes
   COMMAND echo "building meshes"
