@@ -282,7 +282,7 @@ void PrimalProblem::solve()
     iter++;
   }
   if ((iter > max_iters) && (!converged))
-    fail("newton's method failed in %d iterations", max_iters);
+    fail("newton's method failed in %u iterations", max_iters);
   du = Teuchos::null;
 }
 
