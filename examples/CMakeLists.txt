@@ -1,6 +1,4 @@
-include(CTest)
-
-set(GOAL ${CMAKE_CURRENT_BINARY_DIR}/src/goal)
+set(GOAL ${CMAKE_BINARY_DIR}/src/goal)
 
 macro(copy INPUT)
   configure_file(

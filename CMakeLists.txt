@@ -101,6 +101,7 @@ message(STATUS "found SCOREC: ${SCOREC_DIR} (${SCOREC_VERSION})")
 add_subdirectory(src)
 
 if(GOAL_TESTING)
+  include(CTest)
   find_package(Gmodel 1.0.1 REQUIRED PATHS ${Gmodel_PREFIX})
   find_program(GMSH gmsh REQUIRED PATHS ${Gmsh_PREFIX})
   find_program(FROMGMSH from_gmsh REQUIRED PATHS ${SCOREC_PREFIX})
