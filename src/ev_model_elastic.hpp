@@ -20,8 +20,8 @@ PHX_EVALUATOR_CLASS(ModelElastic)
     RCP<const ParameterList> params;
     Teuchos::Array<std::string> disp_names;
 
-    double E;
-    double nu;
+    double E; /* elastic modulus */
+    double nu; /* poisson's ratio */
 
     unsigned num_nodes;
     unsigned num_qps;
