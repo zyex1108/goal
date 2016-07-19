@@ -46,7 +46,7 @@ void StateFields::add(const char* n, FieldType t, bool save, bool I)
     apf::Field* g = apf::createField(
         apf_mesh, oname.c_str(), apf_types[t], s);
     if (!I) apf::zeroField(g);
-    else set_identity(mesh, f, t);
+    else set_identity(mesh, g, t);
     states.push_back(g);
     old_states.push_back(g);
   }
@@ -157,6 +157,17 @@ void StateFields::get_tensor(
   for (unsigned i=0; i < v.get_dimension(); ++i)
   for (unsigned j=0; j < v.get_dimension(); ++j)
     v(i,j) = (T)val[i][j];
+}
+
+void StateFields::update()
+{
+  for (unsigned i=0; i < old_states.size(); ++i) {
+    apf::Field* to = old_states[i];
+    std::string to_name = (std::string)apf::getName(to);
+    std::string from_name = to_name.erase(to_name.find("_old"),4);
+    apf::Field* from = apf_mesh->findField(from_name.c_str());
+    apf::copyData(to,from);
+  }
 }
 
 /* ETI */

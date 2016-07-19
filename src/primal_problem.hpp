@@ -48,7 +48,7 @@ class PrimalProblem
     double gamma;
 
     double tolerance;
-    double max_iters;
+    unsigned max_iters;
 
     void compute_residual();
     void compute_jacobian();

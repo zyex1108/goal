@@ -1,5 +1,5 @@
-#ifndef goal_ev_model_elastic_hpp
-#define goal_ev_model_elastic_hpp
+#ifndef goal_ev_model_j2_hpp
+#define goal_ev_model_j2_hpp
 
 #include "phx_macros.hpp"
 
@@ -9,25 +9,27 @@ using Teuchos::RCP;
 using Teuchos::ParameterList;
 
 struct Layouts;
-class StateFields;
+struct StateFields;
 
-PHX_EVALUATOR_CLASS(ModelElastic)
+PHX_EVALUATOR_CLASS(ModelJ2)
 
   private:
 
     RCP<Layouts> dl;
     RCP<StateFields> states;
     RCP<const ParameterList> params;
-    Teuchos::Array<std::string> disp_names;
 
     double E; /* elastic modulus */
     double nu; /* poisson's ratio */
+    double K; /* hardening modulus */
+    double Y; /* yield strength */
 
     unsigned num_nodes;
     unsigned num_qps;
     unsigned num_dims;
 
-    std::vector<PHX::MDField<ScalarT, Elem, QP, Dim> > grad_u;
+    PHX::MDField<ScalarT, Elem, QP, Dim, Dim> def_grad;
+    PHX::MDField<ScalarT, Elem, QP> det_def_grad;
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> stress;
 
 PHX_EVALUATOR_CLASS_END

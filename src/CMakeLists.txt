@@ -23,6 +23,7 @@ ev_gather_solution.hpp
 ev_dof_interpolation.hpp
 ev_kinematics.hpp
 ev_model_elastic.hpp
+ev_model_j2.hpp
 ev_first_pk.hpp
 ev_mechanics_residual.hpp
 ev_scatter_residual.hpp
@@ -53,6 +54,7 @@ ev_gather_solution.cpp
 ev_dof_interpolation.cpp
 ev_kinematics.cpp
 ev_model_elastic.cpp
+ev_model_j2.cpp
 ev_first_pk.cpp
 ev_mechanics_residual.cpp
 ev_scatter_residual.cpp

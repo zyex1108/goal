@@ -8,6 +8,7 @@
 #include "ev_dof_interpolation.hpp"
 #include "ev_kinematics.hpp"
 #include "ev_model_elastic.hpp"
+#include "ev_model_j2.hpp"
 #include "ev_first_pk.hpp"
 #include "ev_mechanics_residual.hpp"
 #include "ev_scatter_residual.hpp"
@@ -99,11 +100,23 @@ void goal::Mechanics::register_volumetric(
     small_strain = true;
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<const ParameterList> >("Material Params", mp);
     p->set<RCP<StateFields> >("State Fields", state_fields);
+    p->set<RCP<const ParameterList> >("Material Params", mp);
     p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
     p->set<std::string>("Cauchy Name", "cauchy");
     ev = rcp(new ModelElastic<EvalT, GoalTraits>(*p));
+    fm->template registerEvaluator<EvalT>(ev);
+  }
+
+  else if (model == "j2") { /* j2 model */
+    RCP<ParameterList> p = rcp(new ParameterList);
+    p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<RCP<StateFields> >("State Fields", state_fields);
+    p->set<std::string>("Def Grad Name", "F");
+    p->set<std::string>("Det Def Grad Name", "J");
+    p->set<std::string>("Cauchy Name", "cauchy");
+    p->set<RCP<const ParameterList> >("Material Params", mp);
+    ev = rcp(new ModelJ2<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
   }
 
