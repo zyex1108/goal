@@ -7,10 +7,11 @@ macro(copy INPUT)
 endmacro()
 
 macro(setup_test TESTNAME INPUT)
+  copy(${INPUT})
   add_test(${TESTNAME} ${VALGRIND} ${GOAL} ${INPUT})
 endmacro()
 
 add_subdirectory(meshes)
 
-copy(elast_continuation.xml)
 setup_test(elast_continuation elast_continuation.xml)
+setup_test(j2_continuation j2_continuation.xml)
