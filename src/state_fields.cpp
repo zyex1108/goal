@@ -159,6 +159,17 @@ void StateFields::get_tensor(
     v(i,j) = (T)val[i][j];
 }
 
+void StateFields::update()
+{
+  for (unsigned i=0; i < old_states.size(); ++i) {
+    apf::Field* to = old_states[i];
+    std::string to_name = (std::string)apf::getName(to);
+    std::string from_name = to_name.erase(to_name.find("_old"),4);
+    apf::Field* from = apf_mesh->findField(from_name.c_str());
+    apf::copyData(to,from);
+  }
+}
+
 /* ETI */
 template void StateFields::set_scalar(char const* name, apf::MeshEntity* e, unsigned n, double const& v);
 template void StateFields::set_scalar(char const* name, apf::MeshEntity* e, unsigned n, FadType const& v);

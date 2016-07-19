@@ -70,6 +70,7 @@ void SolverContinuation::solve()
     output->write(t_new);
     t_old = t_new;
     t_new = t_new + dt;
+    mechanics->update_state();
   }
 }
 

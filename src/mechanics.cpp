@@ -112,6 +112,7 @@ void Mechanics::project_state()
 
 void Mechanics::update_state()
 {
+  state_fields->update();
 }
 
 Teuchos::Array<std::string> const& Mechanics::get_dof_names()
