@@ -15,7 +15,6 @@ PHX_EVALUATOR_CLASS(PressureResidual)
   private:
 
     RCP<Layouts> dl;
-    std::string bf_name;
     std::string pressure_name;
 
     unsigned num_nodes;
@@ -23,8 +22,8 @@ PHX_EVALUATOR_CLASS(PressureResidual)
     unsigned num_dims;
 
     PHX::MDField<double, Elem, QP> wDv;
-    PHX::MDField<double, Elem, QP> BF;
-    PHX::MDField<double, Elem, QP, Dim> gBF;
+    PHX::MDField<double, Elem, Node, QP> BF;
+    PHX::MDField<double, Elem, Node, QP, Dim> gBF;
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> def_grad;
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> stress;
     PHX::MDField<ScalarT, Elem, QP> pressure;

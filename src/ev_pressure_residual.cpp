@@ -8,9 +8,9 @@ namespace goal {
 
 PHX_EVALUATOR_CTOR(PressureResidual, p) :
   dl            (p.get<RCP<Layouts> >("Layouts")),
-  bf_name       (p.get<std::string>("BF Name")),
   pressure_name (p.get<std::string>("Pressure Name")),
   wDv           (p.get<std::string>("Weighted Dv Name"), dl->qp_scalar),
+  BF            (p.get<std::string>("BF Name"), dl->node_qp_scalar),
   def_grad      (p.get<std::string>("Def Grad Name"), dl->qp_tensor),
   stress        (p.get<std::string>("First PK Name"), dl->qp_tensor)
 {
@@ -18,8 +18,7 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
   num_qps = dl->node_qp_vector->dimension(2);
   num_dims = dl->node_qp_vector->dimension(3);
 
-  get_field(bf_name, dl, BF);
-  get_grad_field(bf_name, dl, gBF);
+  get_grad_field(BF, dl, gBF);
   get_field(pressure_name, dl, pressure);
   get_grad_field(pressure_name, dl, pressure_grad);
   get_resid_field(pressure_name, dl, resid);
