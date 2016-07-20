@@ -199,21 +199,24 @@ unsigned Mesh::get_num_worksets(const unsigned set_idx)
 }
 
 std::vector<apf::MeshEntity*> const& Mesh::get_elems(
-    std::string const& elem_set_idx, const unsigned ws_idx)
+    std::string const& elem_set, const unsigned ws_idx)
 {
-  return elem_sets[elem_set_idx][ws_idx];
+  CHECK(elem_sets.count(elem_set));
+  return elem_sets[elem_set][ws_idx];
 }
 
 std::vector<apf::MeshEntity*> const& Mesh::get_facets(
-    std::string const& facet_set_idx)
+    std::string const& facet_set)
 {
-  return facet_sets[facet_set_idx];
+  CHECK(facet_sets.count(facet_set));
+  return facet_sets[facet_set];
 }
 
 std::vector<apf::Node*> const& Mesh::get_nodes(
-    std::string const& node_set_idx)
+    std::string const& node_set)
 {
-  return node_sets[node_set_idx];
+  CHECK(node_sets.count(node_set));
+  return node_sets[node_set];
 }
 
 static GO get_dof(const GO node, const unsigned eq, const unsigned neq)
