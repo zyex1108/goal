@@ -18,6 +18,8 @@ static RCP<ParameterList> get_valid_params()
   p->set<double>("initial time", 0.0);
   p->set<double>("step size", 0.0);
   p->set<unsigned>("num steps", 0);
+  p->set<double>("regression: val", 0.0);
+  p->set<double>("regression: tol", 0.0);
   p->sublist("mesh");
   p->sublist("mechanics");
   p->sublist("linear algebra");
@@ -59,6 +61,19 @@ SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
   t_new = t_old + dt;
 }
 
+static void check_regression(
+    RCP<const ParameterList> p,
+    RCP<SolutionInfo> s)
+{
+  double tol = p->get<double>("regression: tol");
+  double expected = p->get<double>("regression: val");
+  RCP<const Vector> x = s->owned_solution->getVector(0);
+  double computed = x->meanValue();
+  print("expected solution average: %.15f", expected);
+  print("computed solution average: %.15f", computed);
+  CHECK(std::abs(computed-expected) < tol);
+}
+
 void SolverContinuation::solve()
 {
   for (unsigned step=1; step <= num_steps; ++step) {
@@ -72,6 +87,8 @@ void SolverContinuation::solve()
     t_new = t_new + dt;
     mechanics->update_state();
   }
+  if (params->isParameter("regression: val"))
+    check_regression(params, sol_info);
 }
 
 }

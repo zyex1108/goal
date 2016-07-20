@@ -63,11 +63,11 @@ class Mesh
     unsigned get_num_worksets(const unsigned elem_set_idx);
 
     std::vector<apf::MeshEntity*> const& get_elems(
-        std::string const& elem_set_idx, const unsigned ws_idx);
+        std::string const& elem_set, const unsigned ws_idx);
     std::vector<apf::MeshEntity*> const& get_facets(
-        std::string const& facet_set_idx);
+        std::string const& facet_set);
     std::vector<apf::Node*> const& get_nodes(
-        std::string const& node_set_idx);
+        std::string const& node_set);
 
     LO get_lid(apf::MeshEntity* e, const unsigned n, const unsigned eq);
     LO get_lid(apf::Node* n, const unsigned eq);

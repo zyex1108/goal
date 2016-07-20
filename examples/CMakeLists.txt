@@ -1,4 +1,6 @@
-set(GOAL ${CMAKE_BINARY_DIR}/src/goal)
+set(GOALEXE ${CMAKE_BINARY_DIR}/src/goal)
+set(MPIEXE mpirun)
+set(MPIFLAGS -np)
 
 macro(copy INPUT)
   configure_file(
@@ -8,10 +10,14 @@ endmacro()
 
 macro(setup_test TESTNAME INPUT)
   copy(${INPUT})
-  add_test(${TESTNAME} ${VALGRIND} ${GOAL} ${INPUT})
+  add_test(${TESTNAME} ${MPIEXE} ${MPIFLAGS} 4
+    ${VALGRIND} ${GOALEXE} ${INPUT})
 endmacro()
 
 add_subdirectory(meshes)
 
-setup_test(elast_continuation elast_continuation.xml)
-setup_test(j2_continuation j2_continuation.xml)
+setup_test(elast_continuation_2D elast_continuation_2D.xml)
+setup_test(elast_continuation_3D elast_continuation_3D.xml)
+setup_test(j2_continuation_2D j2_continuation_2D.xml)
+setup_test(j2_continuation_3D j2_continuation_3D.xml)
+setup_test(j2_continuation_2D_P2 j2_continuation_2D_P2.xml)
