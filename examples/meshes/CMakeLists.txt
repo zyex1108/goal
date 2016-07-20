@@ -20,19 +20,26 @@ function(generate MODEL DIM)
     DEPENDS ${MODEL}.geo
     COMMENT "generating ${MODEL}.msh")
   add_custom_command(
-    OUTPUT ${MODEL}.smb
-    COMMAND ${FROMGMSH} ${MODEL}.dmg ${MODEL}.msh ${MODEL}.smb
+    OUTPUT ${MODEL}-serial.smb
+    COMMAND ${FROMGMSH} ${MODEL}.dmg ${MODEL}.msh ${MODEL}-serial.smb
     DEPENDS ${MODEL}.dmg ${MODEL}.msh
-    COMMENT "generating ${MODEL_NAME}.smb")
+    COMMENT "generating ${MODEL}-serial.smb")
+  add_custom_command(
+    OUTPUT ${MODEL}.smb
+    COMMAND mpirun -np 4 ${SPLIT} ${MODEL}.dmg ${MODEL}-serial.smb ${MODEL}.smb 4
+    DEPENDS ${MODEL}.dmg ${MODEL}-serial.smb
+    COMMENT "generating ${MODEL}.smb")
 endfunction()
 
-generate(square 2)
-set(EX_MESHES ${EX_MESHES} square.smb)
-copy(square.txt)
+macro(add_mesh MODEL DIM)
+  generate(${MODEL} ${DIM})
+  set(EX_MESHES ${EX_MESHES} ${MODEL}.smb)
+  copy(${MODEL}.txt)
+endmacro()
 
-generate(kirsch 2)
-set(EX_MESHES ${EX_MESHES} kirsch.smb)
-copy(kirsch.txt)
+add_mesh(square 2)
+add_mesh(kirsch 2)
+add_mesh(cube 3)
 
 add_custom_target(meshes
   COMMAND echo "building meshes"
