@@ -20,8 +20,11 @@ PHX_EVALUATOR_CLASS(FirstPK)
     unsigned num_dims;
 
     bool small_strain;
+    bool have_pressure;
+
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> def_grad;
     PHX::MDField<ScalarT, Elem, QP> det_def_grad;
+    PHX::MDField<ScalarT, Elem, QP> pressure;
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> cauchy;
 
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> first_pk;

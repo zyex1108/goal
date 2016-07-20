@@ -128,9 +128,12 @@ void goal::Mechanics::register_volumetric(
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
     p->set<bool>("Small Strain", small_strain);
+    p->set<bool>("Have Pressure", have_pressure_eq);
     p->set<std::string>("Def Grad Name", "F");
     p->set<std::string>("Det Def Grad Name", "J");
     p->set<std::string>("Cauchy Name", "cauchy");
+    if (have_pressure_eq)
+      p->set<std::string>("Pressure Name", "p");
     p->set<std::string>("First PK Name", "first_pk");
     ev = rcp(new FirstPK<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
