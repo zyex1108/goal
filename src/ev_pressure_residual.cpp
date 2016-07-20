@@ -31,6 +31,7 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
   this->addDependentField(pressure);
   this->addDependentField(pressure_grad);
   this->addEvaluatedField(resid);
+  this->setName("Pressure Residual");
 }
 
 PHX_POST_REGISTRATION_SETUP(PressureResidual, data, fm)
