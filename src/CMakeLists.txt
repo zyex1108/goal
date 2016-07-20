@@ -26,6 +26,7 @@ ev_model_elastic.hpp
 ev_model_j2.hpp
 ev_first_pk.hpp
 ev_mechanics_residual.hpp
+ev_pressure_residual.hpp
 ev_scatter_residual.hpp
 ev_bc_dirichlet.hpp
 solver.hpp
@@ -57,6 +58,7 @@ ev_model_elastic.cpp
 ev_model_j2.cpp
 ev_first_pk.cpp
 ev_mechanics_residual.cpp
+ev_pressure_residual.cpp
 ev_scatter_residual.cpp
 ev_bc_dirichlet.cpp
 solver.cpp
