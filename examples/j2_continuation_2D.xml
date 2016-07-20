@@ -4,6 +4,8 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
+  <Parameter name="regression: val" type="double" value="0.002645254041102"/>
+  <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/square.dmg"/>
@@ -38,7 +40,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_j2_continuation"/>
+    <Parameter name="out file" type="string" value="out_j2_continuation_2D"/>
   </ParameterList>
 
 </ParameterList>
