@@ -246,6 +246,16 @@ LO Mesh::get_lid(apf::Node* node, const unsigned eq)
   return lid;
 }
 
+double Mesh::get_mesh_size(apf::MeshEntity* e)
+{
+  double h = 0.0;
+  apf::Downward edges;
+  unsigned ne = mesh->getDownward(e,1,edges);
+  for (unsigned i=0; i < ne; ++i)
+    h += std::max(h, apf::measure(mesh, edges[i]));
+  return h/ne;
+}
+
 void Mesh::compute_owned_map()
 {
   if (numbering) apf::destroyGlobalNumbering(numbering);
