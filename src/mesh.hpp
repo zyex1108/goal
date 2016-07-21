@@ -72,6 +72,8 @@ class Mesh
     LO get_lid(apf::MeshEntity* e, const unsigned n, const unsigned eq);
     LO get_lid(apf::Node* n, const unsigned eq);
 
+    double get_mesh_size(apf::MeshEntity* e);
+
     void update();
 
   private:

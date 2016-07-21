@@ -11,6 +11,7 @@
 #include "ev_model_j2.hpp"
 #include "ev_first_pk.hpp"
 #include "ev_mechanics_residual.hpp"
+#include "ev_pressure_residual.hpp"
 #include "ev_scatter_residual.hpp"
 
 namespace goal {
@@ -127,9 +128,12 @@ void goal::Mechanics::register_volumetric(
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
     p->set<bool>("Small Strain", small_strain);
+    p->set<bool>("Have Pressure", have_pressure_eq);
     p->set<std::string>("Def Grad Name", "F");
     p->set<std::string>("Det Def Grad Name", "J");
     p->set<std::string>("Cauchy Name", "cauchy");
+    if (have_pressure_eq)
+      p->set<std::string>("Pressure Name", "p");
     p->set<std::string>("First PK Name", "first_pk");
     ev = rcp(new FirstPK<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
@@ -143,6 +147,22 @@ void goal::Mechanics::register_volumetric(
     p->set<std::string>("Weighted Dv Name", "wDv");
     p->set<std::string>("First PK Name", "first_pk");
     ev = rcp(new MechanicsResidual<EvalT, GoalTraits>(*p));
+    fm->template registerEvaluator<EvalT>(ev);
+  }
+
+  if (have_pressure_eq) { /* pressure residual */
+    RCP<ParameterList> p = rcp(new ParameterList);
+    p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<RCP<Mesh> >("Mesh", mesh);
+    p->set<RCP<const ParameterList> >("Material Params", mp);
+    p->set<bool>("Small Strain", small_strain);
+    p->set<std::string>("Pressure Name", "p");
+    p->set<std::string>("Weighted Dv Name", "wDv");
+    p->set<std::string>("BF Name", "BF");
+    p->set<std::string>("Def Grad Name", "F");
+    p->set<std::string>("Det Def Grad Name", "J");
+    p->set<std::string>("Cauchy Name", "cauchy");
+    ev = rcp(new PressureResidual<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
   }
 

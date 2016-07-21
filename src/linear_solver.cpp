@@ -21,10 +21,7 @@ static RCP<ParameterList> get_ifpack2_params()
 {
   RCP<ParameterList> p = rcp(new ParameterList);
   p->set("fact: drop tolerance", 0.0);
-  p->set("fact: ilut level-of-fill", 0.0);
-  p->set("schwarz: filter singletons", true);
-  p->set("schwarz: use reordering", false);
-  p->set("schwarz: overlap level", 0);
+  p->set("fact: ilut level-of-fill", 6.0);
   return p;
 }
 
@@ -46,7 +43,7 @@ static RCP<Prec> build_ifpack2_prec(RCP<Matrix> A)
 {
   RCP<ParameterList> p = get_ifpack2_params();
   Ifpack2::Factory factory;
-  RCP<IfpackPrec> prec = factory.create<RM>("SCHWARZ", A);
+  RCP<IfpackPrec> prec = factory.create<RM>("ILUT", A);
   prec->setParameters(*p);
   prec->initialize();
   prec->compute();

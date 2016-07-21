@@ -40,6 +40,7 @@ class Output
     std::string name;
     unsigned o_file_pos;
     unsigned index;
+    bool save_stabilized;
 
     void get_inputs();
     void write_vtk(const double t);

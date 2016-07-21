@@ -38,7 +38,7 @@ macro(add_mesh MODEL DIM)
 endmacro()
 
 add_mesh(square 2)
-add_mesh(kirsch 2)
+add_mesh(plate 2)
 add_mesh(cube 3)
 
 add_custom_target(meshes

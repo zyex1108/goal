@@ -11,6 +11,7 @@ namespace goal {
 PHX_EVALUATOR_CTOR(FirstPK, p) :
   dl            (p.get<RCP<Layouts> >("Layouts")),
   small_strain  (p.get<bool>("Small Strain")),
+  have_pressure (p.get<bool>("Have Pressure")),
   def_grad      (p.get<std::string>("Def Grad Name"), dl->qp_tensor),
   det_def_grad  (p.get<std::string>("Det Def Grad Name"), dl->qp_scalar),
   cauchy        (p.get<std::string>("Cauchy Name"), dl->qp_tensor),
@@ -22,6 +23,13 @@ PHX_EVALUATOR_CTOR(FirstPK, p) :
   this->addDependentField(def_grad);
   this->addDependentField(det_def_grad);
   this->addDependentField(cauchy);
+
+  if (have_pressure) {
+    std::string pressure_name = p.get<std::string>("Pressure Name");
+    get_field(pressure_name, dl, pressure);
+    this->addDependentField(pressure);
+  }
+
   this->addEvaluatedField(first_pk);
   this->setName("First PK");
 }
@@ -31,6 +39,8 @@ PHX_POST_REGISTRATION_SETUP(FirstPK, data, fm)
   this->utils.setFieldData(def_grad, fm);
   this->utils.setFieldData(det_def_grad, fm);
   this->utils.setFieldData(cauchy, fm);
+  if (have_pressure)
+    this->utils.setFieldData(pressure, fm);
   this->utils.setFieldData(first_pk, fm);
 }
 
@@ -75,6 +85,20 @@ PHX_EVALUATE_FIELDS(FirstPK, workset)
       }
     }
   }
+
+  if (have_pressure) {
+    for (unsigned elem=0; elem < workset.size; ++elem) {
+      for (unsigned qp=0; qp < num_qps; ++qp) {
+        ScalarT p = first_pk(elem, qp, 0, 0);
+        for (unsigned i=1; i < num_dims; ++i)
+          p += first_pk(elem, qp, i, i);
+        p /= num_dims;
+        for (unsigned i=0; i < num_dims; ++i)
+          first_pk(elem,qp,i,i) += pressure(elem,qp) - p;
+      }
+    }
+  }
+
 }
 
 GOAL_INSTANTIATE_ALL(FirstPK)

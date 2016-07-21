@@ -1,4 +1,4 @@
-element set kirsch 1
+element set plate 1
 2 12
 node set bottom 1
 1 6
