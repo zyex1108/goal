@@ -18,6 +18,8 @@ add_subdirectory(meshes)
 
 setup_test(elast_continuation_2D elast_continuation_2D.xml)
 setup_test(elast_continuation_3D elast_continuation_3D.xml)
+setup_test(elast_continuation_mixed_2D elast_continuation_mixed_2D.xml)
 setup_test(j2_continuation_2D j2_continuation_2D.xml)
 setup_test(j2_continuation_3D j2_continuation_3D.xml)
 setup_test(j2_continuation_2D_P2 j2_continuation_2D_P2.xml)
+setup_test(j2_continuation_mixed_2D j2_continuation_mixed_2D.xml)
