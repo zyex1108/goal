@@ -90,7 +90,7 @@ PHX_EVALUATE_FIELDS(FirstPK, workset)
     for (unsigned elem=0; elem < workset.size; ++elem) {
       for (unsigned qp=0; qp < num_qps; ++qp) {
         ScalarT p = first_pk(elem, qp, 0, 0);
-        for (unsigned i=0; i < num_dims; ++i)
+        for (unsigned i=1; i < num_dims; ++i)
           p += first_pk(elem, qp, i, i);
         p /= num_dims;
         for (unsigned i=0; i < num_dims; ++i)
