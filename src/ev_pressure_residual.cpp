@@ -37,7 +37,7 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
   double E = params->get<double>("E");
   double nu = params->get<double>("nu");
   G = E/(2.0*(1.0+nu));
-  K = E/(2.0*(1.0-2.0*nu));
+  K = E/(3.0*(1.0-2.0*nu));
   alpha = 1.0;
 
   get_grad_field(BF, dl, gBF);

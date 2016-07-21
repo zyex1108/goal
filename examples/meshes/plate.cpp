@@ -21,6 +21,6 @@ int main()
   add_use(loop, FORWARD, l3);
   add_use(loop, FORWARD, l4);
   auto f = new_plane2(loop);
-  write_closure_to_geo(f, "kirsch.geo");
-  write_closure_to_dmg(f, "kirsch.dmg");
+  write_closure_to_geo(f, "plate.geo");
+  write_closure_to_dmg(f, "plate.dmg");
 }
