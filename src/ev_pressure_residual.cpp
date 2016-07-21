@@ -10,21 +10,10 @@
 
 namespace goal {
 
-static RCP<ParameterList> get_valid_params()
-{
-  RCP<ParameterList> p = rcp(new ParameterList);
-  p->set<double>("E", 0.0);
-  p->set<double>("nu", 0.0);
-  p->set<double>("alpha", 0.0);
-  return p;
-}
-
 static void validate_params(RCP<const ParameterList> p)
 {
   assert_param(p, "E");
   assert_param(p, "nu");
-  assert_param(p, "alpha");
-  p->validateParameters(*get_valid_params(), 0);
 }
 
 
@@ -47,9 +36,9 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
   validate_params(params);
   double E = params->get<double>("E");
   double nu = params->get<double>("nu");
-  alpha = params->get<double>("alpha");
   G = E/(2.0*(1.0+nu));
   K = E/(2.0*(1.0-2.0*nu));
+  alpha = 1.0;
 
   get_grad_field(BF, dl, gBF);
   get_field(pressure_name, dl, pressure);
@@ -83,7 +72,7 @@ PHX_POST_REGISTRATION_SETUP(PressureResidual, data, fm)
 
 PHX_EVALUATE_FIELDS(PressureResidual, workset)
 {
-  Intrepid2::Tensor<ScalarT> sigma;
+  Intrepid2::Tensor<ScalarT> sigma(num_dims);
   Intrepid2::Tensor<ScalarT> F(num_dims);
   Intrepid2::Tensor<ScalarT> Cinv(num_dims);
 
