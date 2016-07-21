@@ -153,11 +153,15 @@ void goal::Mechanics::register_volumetric(
   if (have_pressure_eq) { /* pressure residual */
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<std::string>("BF Name", "BF");
+    p->set<RCP<Mesh> >("Mesh", mesh);
+    p->set<RCP<const ParameterList> >("Material Params", mp);
+    p->set<bool>("Small Strain", small_strain);
     p->set<std::string>("Pressure Name", "p");
     p->set<std::string>("Weighted Dv Name", "wDv");
+    p->set<std::string>("BF Name", "BF");
     p->set<std::string>("Def Grad Name", "F");
-    p->set<std::string>("First PK Name", "first_pk");
+    p->set<std::string>("Det Def Grad Name", "J");
+    p->set<std::string>("Cauchy Name", "cauchy");
     ev = rcp(new PressureResidual<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
   }
