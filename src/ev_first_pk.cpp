@@ -46,6 +46,7 @@ PHX_POST_REGISTRATION_SETUP(FirstPK, data, fm)
 
 PHX_EVALUATE_FIELDS(FirstPK, workset)
 {
+
   if (small_strain) {
     for (unsigned elem=0; elem < workset.size; ++elem)
     for (unsigned qp=0; qp < num_qps; ++qp)
@@ -75,7 +76,6 @@ PHX_EVALUATE_FIELDS(FirstPK, workset)
         }
 
         Finv = Intrepid2::inverse(F);
-        ScalarT J = Intrepid2::det(F);
         P = J*sigma*Intrepid2::transpose(Finv);
 
         for (unsigned i=0; i < num_dims; ++i)
