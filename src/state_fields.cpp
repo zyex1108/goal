@@ -19,10 +19,19 @@ StateFields::StateFields(RCP<Mesh> m) :
 {
 }
 
+
+static apf::Matrix3x3 get_identity(RCP<Mesh> m)
+{
+  apf::Matrix3x3 I2x2(1,0,0,0,1,0,0,0,0);
+  apf::Matrix3x3 I3x3(1,0,0,0,1,0,0,0,1);
+  if (m->get_num_dims() == 2) return I2x2;
+  else return I3x3;
+}
+
 static void set_identity(RCP<Mesh> m, apf::Field* f, FieldType t)
 {
   CHECK(t == TENSOR);
-  apf::Matrix3x3 I(1,0,0,0,1,0,0,0,1);
+  apf::Matrix3x3 I = get_identity(m);
   apf::Mesh* am = m->get_apf_mesh();
   apf::MeshEntity* elem;
   apf::MeshIterator* it = am->begin(m->get_num_dims());
