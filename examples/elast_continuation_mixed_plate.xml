@@ -1,0 +1,46 @@
+<ParameterList>
+
+  <Parameter name="solver type" type="string" value="continuation"/>
+  <Parameter name="initial time" type="double" value="0.0"/>
+  <Parameter name="step size" type="double" value="1.0"/>
+  <Parameter name="num steps" type="unsigned int" value="3"/>
+  <Parameter name="regression: val" type="double" value="1.507456683800970"/>
+  <Parameter name="regression: tol" type="double" value="1.0e-12"/>
+
+  <ParameterList name="mesh">
+    <Parameter name="geom file" type="string" value="meshes/plate.dmg"/>
+    <Parameter name="mesh file" type="string" value="meshes/plate.smb"/>
+    <Parameter name="assoc file" type="string" value="meshes/plate.txt"/>
+    <Parameter name="ws size" type="unsigned int" value="10"/>
+    <Parameter name="p order" type="unsigned int" value="1"/>
+    <Parameter name="q order" type="unsigned int" value="1"/>
+  </ParameterList>
+
+  <ParameterList name="mechanics">
+    <Parameter name="model" type="string" value="linear elastic"/>
+    <Parameter name="mixed formulation" type="bool" value="true"/>
+    <ParameterList name="plate">
+      <Parameter name="E" type="double" value="1000.0"/>
+      <Parameter name="nu" type="double" value="0.25"/>
+    </ParameterList>
+    <ParameterList name="dirichlet bcs">
+      <Parameter name="bc 1" type="Array(string)" value="{ux,left,val=0.0}"/>
+      <Parameter name="bc 2" type="Array(string)" value="{uy,bottom,val=0.0}"/>
+      <Parameter name="bc 3" type="Array(string)" value="{ux,right,val=0.01*t}"/>
+    </ParameterList>
+  </ParameterList>
+
+  <ParameterList name="linear algebra">
+    <Parameter name="linear: tolerance" type="double" value="1.0e-10"/>
+    <Parameter name="linear: max iters" type="unsigned int" value="100"/>
+    <Parameter name="linear: krylov size" type="unsigned int" value="100"/>
+    <Parameter name="nonlinear: tolerance" type="double" value="1.0e-8"/>
+    <Parameter name="nonlinear: max iters" type="unsigned int" value="5"/>
+  </ParameterList>
+
+  <ParameterList name="output">
+    <Parameter name="out file" type="string" value="out_elast_continuation_mixed_plate"/>
+    <Parameter name="save stabilized stress" type="bool" value="true"/>
+  </ParameterList>
+
+</ParameterList>
