@@ -16,7 +16,6 @@ PHX_EVALUATOR_CLASS(PressureResidual)
   private:
 
     RCP<Layouts> dl;
-    RCP<Mesh> mesh;
     RCP<const ParameterList> params;
     bool small_strain;
     std::string pressure_name;
@@ -29,6 +28,7 @@ PHX_EVALUATOR_CLASS(PressureResidual)
     unsigned num_qps;
     unsigned num_dims;
 
+    PHX::MDField<double, Elem, QP> size;
     PHX::MDField<double, Elem, QP> wDv;
     PHX::MDField<double, Elem, Node, QP> BF;
     PHX::MDField<double, Elem, Node, QP, Dim> gBF;
