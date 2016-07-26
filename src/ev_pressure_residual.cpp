@@ -19,10 +19,10 @@ static void validate_params(RCP<const ParameterList> p)
 
 PHX_EVALUATOR_CTOR(PressureResidual, p) :
   dl            (p.get<RCP<Layouts> >("Layouts")),
-  mesh          (p.get<RCP<Mesh> >("Mesh")),
   params        (p.get<RCP<const ParameterList> >("Material Params")),
   small_strain  (p.get<bool>("Small Strain")),
   pressure_name (p.get<std::string>("Pressure Name")),
+  size          (p.get<std::string>("Size Name"), dl->qp_scalar),
   wDv           (p.get<std::string>("Weighted Dv Name"), dl->qp_scalar),
   BF            (p.get<std::string>("BF Name"), dl->node_qp_scalar),
   def_grad      (p.get<std::string>("Def Grad Name"), dl->qp_tensor),
@@ -45,6 +45,7 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
   get_grad_field(pressure_name, dl, pressure_grad);
   get_resid_field(pressure_name, dl, resid);
 
+  this->addDependentField(size);
   this->addDependentField(wDv);
   this->addDependentField(BF);
   this->addDependentField(gBF);
@@ -59,6 +60,7 @@ PHX_EVALUATOR_CTOR(PressureResidual, p) :
 
 PHX_POST_REGISTRATION_SETUP(PressureResidual, data, fm)
 {
+  this->utils.setFieldData(size, fm);
   this->utils.setFieldData(wDv, fm);
   this->utils.setFieldData(BF, fm);
   this->utils.setFieldData(gBF, fm);
@@ -79,9 +81,6 @@ PHX_EVALUATE_FIELDS(PressureResidual, workset)
   if (small_strain) {
 
     for (unsigned elem=0; elem < workset.size; ++elem) {
-      apf::MeshEntity* e = workset.ents[elem];
-      double h = mesh->get_mesh_size(e);
-
       for (unsigned node=0; node < num_nodes; ++node)
         resid(elem, node) = 0.0;
       for (unsigned qp=0; qp < num_qps; ++qp) {
@@ -95,22 +94,19 @@ PHX_EVALUATE_FIELDS(PressureResidual, workset)
       }
 
       for (unsigned qp=0; qp < num_qps; ++qp) {
+        double h = size(elem, qp);
         ScalarT param = 0.5*alpha*h*h / G;
         for (unsigned node=0; node < num_nodes; ++node)
         for (unsigned i=0; i < num_dims; ++i)
           resid(elem, node) -= param * wDv(elem,qp) *
             gBF(elem,node,qp,i)*pressure_grad(elem,qp,i);
       }
-
     }
   }
 
   else {
 
     for (unsigned elem=0; elem < workset.size; ++elem) {
-      apf::MeshEntity* e = workset.ents[elem];
-      double h = mesh->get_mesh_size(e);
-
       for (unsigned node=0; node < num_nodes; ++node)
         resid(elem, node) = 0.0;
       for (unsigned qp=0; qp < num_qps; ++qp) {
@@ -129,6 +125,7 @@ PHX_EVALUATE_FIELDS(PressureResidual, workset)
         for (unsigned j=0; j < num_dims; ++j)
           F(i,j) = def_grad(elem,qp,i,j);
         Cinv = Intrepid2::inverse(Intrepid2::transpose(F)*F);
+        double h = size(elem, qp);
         ScalarT param = 0.5*alpha*h*h / G;
         for (unsigned node=0; node < num_nodes; ++node)
         for (unsigned i=0; i < num_dims; ++i)
@@ -136,7 +133,6 @@ PHX_EVALUATE_FIELDS(PressureResidual, workset)
           resid(elem,node) -= param * wDv(elem, qp) * J * Cinv(i,j) *
             pressure_grad(elem,qp,i) * gBF(elem,node,qp,j);
       }
-
     }
   }
 

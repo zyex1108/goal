@@ -10,6 +10,7 @@
 #include "ev_model_elastic.hpp"
 #include "ev_model_j2.hpp"
 #include "ev_first_pk.hpp"
+#include "ev_elem_size.hpp"
 #include "ev_mechanics_residual.hpp"
 #include "ev_pressure_residual.hpp"
 #include "ev_scatter_residual.hpp"
@@ -150,13 +151,22 @@ void goal::Mechanics::register_volumetric(
     fm->template registerEvaluator<EvalT>(ev);
   }
 
+  if (have_pressure_eq) { /* element size */
+    RCP<ParameterList> p = rcp(new ParameterList);
+    p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<std::string>("BF Name", "BF");
+    p->set<std::string>("Size Name", "size");
+    ev = rcp(new ElemSize<EvalT, GoalTraits>(*p));
+    fm->template registerEvaluator<EvalT>(ev);
+  }
+
   if (have_pressure_eq) { /* pressure residual */
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<Mesh> >("Mesh", mesh);
     p->set<RCP<const ParameterList> >("Material Params", mp);
     p->set<bool>("Small Strain", small_strain);
     p->set<std::string>("Pressure Name", "p");
+    p->set<std::string>("Size Name", "size");
     p->set<std::string>("Weighted Dv Name", "wDv");
     p->set<std::string>("BF Name", "BF");
     p->set<std::string>("Def Grad Name", "F");
