@@ -20,8 +20,8 @@ PHX_EVALUATOR_CLASS(ElemSize)
     unsigned num_qps;
     unsigned num_dims;
 
-    PHX::MDField<ScalarT, Elem, QP, Dim> gBF;
-    PHX::MDField<ScalarT, Elem> size;
+    PHX::MDField<double, Elem, Node, QP, Dim> gBF;
+    PHX::MDField<double, Elem, QP> size;
 
 PHX_EVALUATOR_CLASS_END
 

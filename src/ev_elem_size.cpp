@@ -30,7 +30,7 @@ PHX_POST_REGISTRATION_SETUP(ElemSize, data, fm)
 
 PHX_EVALUATE_FIELDS(ElemSize, workset)
 {
-  ScalarT h=0.0;
+  double h=0.0;
   for (unsigned elem=0; elem < workset.size; ++elem) {
     for (unsigned qp=0; qp < num_qps; ++qp) {
       h = 0.0;
