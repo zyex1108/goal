@@ -113,7 +113,7 @@ PHX_EVALUATE_FIELDS(ModelJ2, workset)
       /* check yield condition */
       ScalarT smag = Intrepid2::norm<ScalarT>(s);
       states->get_scalar("eqps_old", e, qp, eqps);
-      ScalarT f = smag - sq23 * (Y + K*eqps);
+      f = smag - sq23 * (Y + K*eqps);
 
       /* plastic increment - return mapping algorithm */
       if (f > 1.0e-12) {
