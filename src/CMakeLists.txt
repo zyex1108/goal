@@ -24,6 +24,7 @@ ev_dof_interpolation.hpp
 ev_kinematics.hpp
 ev_model_elastic.hpp
 ev_model_j2.hpp
+ev_model_creep.hpp
 ev_first_pk.hpp
 ev_elem_size.hpp
 ev_mechanics_residual.hpp
@@ -58,6 +59,7 @@ ev_dof_interpolation.cpp
 ev_kinematics.cpp
 ev_model_elastic.cpp
 ev_model_j2.cpp
+ev_model_creep.cpp
 ev_first_pk.cpp
 ev_elem_size.cpp
 ev_mechanics_residual.cpp
