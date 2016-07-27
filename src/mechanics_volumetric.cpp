@@ -9,6 +9,7 @@
 #include "ev_kinematics.hpp"
 #include "ev_model_elastic.hpp"
 #include "ev_model_j2.hpp"
+#include "ev_model_creep.hpp"
 #include "ev_first_pk.hpp"
 #include "ev_elem_size.hpp"
 #include "ev_mechanics_residual.hpp"
@@ -119,6 +120,18 @@ void goal::Mechanics::register_volumetric(
     p->set<std::string>("Cauchy Name", "cauchy");
     p->set<RCP<const ParameterList> >("Material Params", mp);
     ev = rcp(new ModelJ2<EvalT, GoalTraits>(*p));
+    fm->template registerEvaluator<EvalT>(ev);
+  }
+
+  else if (model == "creep") { /* creep model */
+    RCP<ParameterList> p = rcp(new ParameterList);
+    p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<RCP<StateFields> >("State Fields", state_fields);
+    p->set<std::string>("Def Grad Name", "F");
+    p->set<std::string>("Det Def Grad Name", "J");
+    p->set<std::string>("Cauchy Name", "cauchy");
+    p->set<RCP<const ParameterList> >("Material Params", mp);
+    ev = rcp(new ModelCreep<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
   }
 
