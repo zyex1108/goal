@@ -1,0 +1,17 @@
+element set balls 4
+3 105
+3 179
+3 216
+3 142
+element set top 1
+3 68
+element set bottom 1
+3 34
+node set origin 1
+0 1
+node set xmax 1
+0 2
+node set ymax 1
+0 4
+node set zmax 1
+0 14
