@@ -23,8 +23,8 @@ PHX_EVALUATOR_CLASS(ModelCreep)
     double nu; /* poisson's ratio */
     double K; /* hardening modulus */
     double Y; /* yield strength */
-    double A; /* relaxation parameter */
-    double B; /* temperature adjusted relaxation */
+    double A2; /* relaxation parameter */
+    double B; /* temperature adjusted relaxation parameter */
     double QR; /* activation parameter */
     double C2; /* strain rate exponent */
 

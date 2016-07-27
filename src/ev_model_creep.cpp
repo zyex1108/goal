@@ -46,7 +46,7 @@ PHX_EVALUATOR_CTOR(ModelCreep, p) :
   nu = params->get<double>("nu");
   K = params->get<double>("K");
   Y = params->get<double>("Y");
-  A = params->get<double>("A");
+  A2 = params->get<double>("A");
   QR = params->get<double>("QR");
   C2 = params->get<double>("C2");
 
@@ -101,6 +101,9 @@ PHX_EVALUATE_FIELDS(ModelCreep, workset)
   Intrepid2::Tensor<ScalarT> be(num_dims);
   Intrepid2::Tensor<ScalarT> s(num_dims);
 
+  /* time increment quantities */
+  double dt = workset.t_new - workset.t_old;
+
   for (unsigned elem=0; elem < workset.size; ++elem) {
 
     apf::MeshEntity* e = workset.ents[elem];
@@ -108,7 +111,7 @@ PHX_EVALUATE_FIELDS(ModelCreep, workset)
     for (unsigned qp=0; qp < num_qps; ++qp) {
 
       /* compute the temperature adjusted relaxation parameter */
-      B = A*std::exp(-QR / 303.0);
+      B = A2*std::exp(-QR / 303.0);
 
       /* deformation gradient quantities */
       for (unsigned i=0; i < num_dims; ++i)
@@ -135,10 +138,77 @@ PHX_EVALUATE_FIELDS(ModelCreep, workset)
       /* compute creep onset criteria */
       a0 = Intrepid2::norm(Intrepid2::dev(be));
       a1 = Intrepid2::trace(be);
+
+      /* below yield strength */
+      if (f <= 0.0) {
+
+        /* creep increment - return mapping algorithm */
+        if (a0 > 1.0e-12) {
+
+          bool converged = false;
+          ScalarT res = 0.0;
+          unsigned iter = 0;
+
+          ScalarT X = 1.1e-4;
+          ScalarT R = X - dt*B*std::pow(mu, C2)*
+            std::pow((a0 - 2.0/3.0*X*a1)*(a0 - 2.0/3.0*X*a1), C2/2.0);
+
+          std::cout << R << std::endl;
+
+          ScalarT dRdX = 1.0 - dt*B*std::pow(mu, C2)*(C2/2.0)*
+            std::pow((a0 - 2.0/3.0*X*a1)*(a0 - 2.0/3.0*X*a1), C2/2.0 - 1.0)*
+            (8.0/9.0*X*a1*a1 - 4.0/3.0*a0*a1);
+
+          while (!converged && iter < 30) {
+            iter++;
+            X = X - R/dRdX;
+            R = X - dt*B*std::pow(mu, C2)*
+              std::pow((a0 - 2.0/3.0*X*a1)*(a0 - 2.0/3.0*X*a1), C2/2.0);
+            dRdX = 1.0 - dt*B*std::pow(mu, C2)*(C2/2.0)*
+              std::pow((a0 - 2.0/3.0*X*a1)*(a0 - 2.0/3.0*X*a1), C2/2.0 - 1.0)*
+              (8.0/9.0*X*a1*a1 - 4.0/3.0*a0*a1);
+            res = std::abs(R);
+            if (res < 1.0e-10)
+              converged = true;
+            if (iter == 30)
+              fail("Creep: pure creep increment failed to converge");
+          }
+
+          /* updates */
+          dgam = X;
+          N = (1.0/smag)*s;
+          s -= 2.0*mubar*dgam*N;
+
+          /* exponential map to get Fpnew */
+          A = dgam*N;
+          expA = Intrepid2::exp(A);
+          Fpn = expA*Fp;
+          states->set_tensor("Fp", e, qp, Fpn);
+          states->set_scalar("eqps", e, qp, eqps);
+        }
+
+        /* purely elastic increment - no creep */
+        else {
+          states->set_scalar("eqps", e, qp, eqps);
+        }
+      }
+
+      /* plastic increment - return mapping algorithm */
+      else {
+      }
+
+      /* compute stress */
+      ScalarT p = 0.5*kappa*(J-1.0/J);
+      sigma = I*p + s/J;
+      states->set_tensor("cauchy", e, qp, sigma);
+      for (unsigned i=0; i < num_dims; ++i)
+      for (unsigned j=0; j < num_dims; ++j)
+        stress(elem, qp, i, j) = sigma(i,j);
+
     }
   }
-
-
 }
+
+GOAL_INSTANTIATE_ALL(ModelCreep)
 
 }
