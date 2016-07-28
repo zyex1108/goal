@@ -4,12 +4,12 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="5.336629946195178"/>
+  <Parameter name="regression: val" type="double" value="5.336629946194777"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/square.dmg"/>
-    <Parameter name="mesh file" type="string" value="meshes/square.smb"/>
+    <Parameter name="mesh file" type="string" value="meshes/square-serial.smb"/>
     <Parameter name="assoc file" type="string" value="meshes/square.txt"/>
     <Parameter name="ws size" type="unsigned int" value="100"/>
     <Parameter name="p order" type="unsigned int" value="1"/>
@@ -39,7 +39,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_elast_continuation_mixed_2D"/>
+    <Parameter name="out file" type="string" value="out_elast_continuation_mixed_2D_serial"/>
   </ParameterList>
 
 </ParameterList>
