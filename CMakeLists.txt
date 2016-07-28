@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Goal CXX)
 
 set(GOAL_MAJOR "0")
-set(GOAL_MINOR "8")
+set(GOAL_MINOR "9")
 set(GOAL_PATCH "0")
 
 set(SCOREC_PREFIX "" CACHE STRING "Scorec installation directory")
