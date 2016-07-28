@@ -38,7 +38,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_elast_continuation_2D"/>
+    <Parameter name="out file" type="string" value="out_elast_continuation_2D_serial"/>
   </ParameterList>
 
 </ParameterList>

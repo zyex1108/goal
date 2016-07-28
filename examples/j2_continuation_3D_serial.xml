@@ -41,7 +41,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_j2_continuation_3D"/>
+    <Parameter name="out file" type="string" value="out_j2_continuation_3D_serial"/>
   </ParameterList>
 
 </ParameterList>
