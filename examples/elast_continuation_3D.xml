@@ -4,7 +4,7 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="0.026401788521536"/>
+  <Parameter name="regression: val" type="double" value="0.002616720151322"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
@@ -26,7 +26,7 @@
       <Parameter name="bc 1" type="Array(string)" value="{ux,xmin,val=0.0}"/>
       <Parameter name="bc 2" type="Array(string)" value="{uy,ymin,val=0.0}"/>
       <Parameter name="bc 3" type="Array(string)" value="{uz,zmin,val=0.0}"/>
-      <Parameter name="bc 4" type="Array(string)" value="{ux,xmax,val=0.1*t}"/>
+      <Parameter name="bc 4" type="Array(string)" value="{ux,xmax,val=0.01*t}"/>
     </ParameterList>
   </ParameterList>
 

@@ -222,6 +222,11 @@ void Mechanics::setup_states()
     state_fields->add("Fp", TENSOR, true, true);
     state_fields->add("eqps", SCALAR, true);
   }
+  else if (model == "creep") {
+    state_fields->add("cauchy", TENSOR, false);
+    state_fields->add("Fp", TENSOR, true, true);
+    state_fields->add("eqps", SCALAR, true);
+  }
   else
     fail("unknown model: %s", model.c_str());
 }

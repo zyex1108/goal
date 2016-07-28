@@ -4,7 +4,7 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="0.049449192921652"/>
+  <Parameter name="regression: val" type="double" value="0.004944919292165"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
@@ -25,7 +25,7 @@
     <ParameterList name="dirichlet bcs">
       <Parameter name="bc 1" type="Array(string)" value="{ux,left,val=0.0}"/>
       <Parameter name="bc 2" type="Array(string)" value="{uy,bottom,val=0.0}"/>
-      <Parameter name="bc 3" type="Array(string)" value="{ux,right,val=0.1*t}"/>
+      <Parameter name="bc 3" type="Array(string)" value="{ux,right,val=0.01*t}"/>
     </ParameterList>
   </ParameterList>
 

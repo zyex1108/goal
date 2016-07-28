@@ -17,8 +17,16 @@ struct GoalTraits : public PHX::TraitsBase
 {
   typedef double RealType;
   typedef Sacado::Fad::SLFad<RealType, GOAL_FAD_SIZE> FadType;
-  struct Residual {typedef RealType ScalarT;};
-  struct Jacobian {typedef FadType ScalarT;};
+  struct Residual
+  {
+    typedef RealType ScalarT;
+    static const std::string name;
+  };
+  struct Jacobian
+  {
+    typedef FadType ScalarT;
+    static const std::string name;
+  };
   typedef Sacado::mpl::vector<Residual, Jacobian> EvalTypes;
   typedef void* SetupData;
   typedef Workset& PreEvalData;

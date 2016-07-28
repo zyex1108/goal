@@ -9,7 +9,7 @@
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/cube.dmg"/>
-    <Parameter name="mesh file" type="string" value="meshes/cube.smb"/>
+    <Parameter name="mesh file" type="string" value="meshes/cube-serial.smb"/>
     <Parameter name="assoc file" type="string" value="meshes/cube.txt"/>
     <Parameter name="ws size" type="unsigned int" value="100"/>
     <Parameter name="p order" type="unsigned int" value="1"/>
@@ -41,7 +41,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_j2_continuation_3D"/>
+    <Parameter name="out file" type="string" value="out_j2_continuation_3D_serial"/>
   </ParameterList>
 
 </ParameterList>
