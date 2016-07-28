@@ -16,6 +16,7 @@ solution_info.hpp
 state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
+dual_problem.hpp
 linear_solver.hpp
 output.hpp
 ev_basis_functions.hpp
@@ -51,6 +52,7 @@ mechanics_volumetric.cpp
 mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
+dual_problem.cpp
 linear_solver.cpp
 output.cpp
 ev_basis_functions.cpp
