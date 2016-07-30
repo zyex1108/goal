@@ -34,6 +34,23 @@ DualProblem::DualProblem(
   validate_params(params);
 }
 
+void DualProblem::set_time(double current, double previous)
+{
+  t_new = current;
+  t_old = previous;
+}
+
+void DualProblem::set_coeffs(double a, double b, double c)
+{
+  alpha = a;
+  beta = b;
+  gamma = c;
+}
+
+void DualProblem::compute_jacobian()
+{
+}
+
 void DualProblem::solve()
 {
 }
