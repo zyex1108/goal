@@ -34,7 +34,6 @@ ev_scatter_residual.hpp
 ev_bc_dirichlet.hpp
 solver.hpp
 solver_continuation.hpp
-solver_trapezoid.hpp
 )
 
 set(SOURCES
@@ -70,7 +69,6 @@ ev_scatter_residual.cpp
 ev_bc_dirichlet.cpp
 solver.cpp
 solver_continuation.cpp
-solver_trapezoid.cpp
 )
 
 add_library(goalie ${SOURCES})
