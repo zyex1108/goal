@@ -28,10 +28,6 @@ class Mechanics
 
     unsigned get_num_eqs();
     
-    void set_primal();
-    void set_dual();
-    void set_error();
-
     void build_primal();
     void build_dual();
     void build_error();
@@ -43,7 +39,7 @@ class Mechanics
     Teuchos::Array<std::string> const& get_var_names(unsigned sol_idx);
     unsigned get_offset(std::string const& var_name);
 
-    FieldManagers get_primal() {return pfms;}
+    FieldManagers get_volumetric() {return vfms;}
     FieldManager get_dirichlet() {return dfm;}
     FieldManager get_neumann() {return nfm;}
 
@@ -70,9 +66,13 @@ class Mechanics
     std::string model;
     Teuchos::RCP<StateFields> state_fields;
 
-    FieldManagers pfms;
+    FieldManagers vfms;
     FieldManager nfm;
     FieldManager dfm;
+
+    void set_primal();
+    void set_dual();
+    void set_error();
 
     void setup_params();
     void setup_variables();

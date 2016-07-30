@@ -46,8 +46,6 @@ PrimalProblem::PrimalProblem(
   gamma(0.0)
 {
   validate_params(params);
-  mechanics->set_primal();
-  mechanics->build_primal();
   tolerance = params->get<double>("nonlinear: tolerance");
   max_iters = params->get<unsigned>("nonlinear: max iters");
   sol_info->ovlp_solution->putScalar(0.0);
@@ -117,7 +115,7 @@ static void compute_volumetric_residual(
     PrimalInfo* info)
 {
   typedef GoalTraits::Residual R;
-  FieldManagers f = mech->get_primal();
+  FieldManagers f = mech->get_volumetric();
   Workset ws;
   load_overlap_solution(ws, s);
   load_primal_info(ws, info);
@@ -183,7 +181,7 @@ static void compute_volumetric_jacobian(
     PrimalInfo* info)
 {
   typedef GoalTraits::Jacobian J;
-  FieldManagers f = mech->get_primal();
+  FieldManagers f = mech->get_volumetric();
   Workset ws;
   load_overlap_solution(ws, s);
   load_primal_info(ws, info);
@@ -261,7 +259,6 @@ void PrimalProblem::compute_jacobian()
 void PrimalProblem::solve()
 {
   print("solving primal model");
-  mechanics->set_primal();
   RCP<Matrix> J = sol_info->owned_jacobian;
   RCP<Vector> u = sol_info->owned_solution->getVectorNonConst(0);
   RCP<Vector> r = sol_info->owned_residual;

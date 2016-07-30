@@ -54,39 +54,18 @@ unsigned Mechanics::get_num_eqs()
   return num_eqs;
 }
 
-void Mechanics::set_primal()
-{
-  is_primal = true;
-  is_dual = false;
-  is_error = false;
-}
-
-void Mechanics::set_dual()
-{
-  is_primal = false;
-  is_dual = false;
-  is_error = false;
-}
-
-void Mechanics::set_error()
-{
-  is_primal = false;
-  is_dual = false;
-  is_error = true;
-}
-
 void Mechanics::build_primal()
 {
-  print("building primal pde fields");
+  double t0 = time();
   set_primal();
   typedef GoalTraits::Residual R;
   typedef GoalTraits::Jacobian J;
-  pfms.resize(mesh->get_num_elem_sets());
+  vfms.resize(mesh->get_num_elem_sets());
   for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
-    pfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
+    vfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
     std::string const& set = mesh->get_elem_set_name(i);
-    register_volumetric<R>(set, pfms[i]);
-    register_volumetric<J>(set, pfms[i]);
+    register_volumetric<R>(set, vfms[i]);
+    register_volumetric<J>(set, vfms[i]);
   }
   nfm = rcp(new PHX::FieldManager<GoalTraits>);
   dfm = rcp(new PHX::FieldManager<GoalTraits>);
@@ -94,16 +73,22 @@ void Mechanics::build_primal()
   register_neumann<J>(nfm);
   register_dirichlet<R>(dfm);
   register_dirichlet<J>(dfm);
+  double t1 = time();
+  print("primal pde fields built in %f seconds", t1-t0);
 }
 
 void Mechanics::build_dual()
 {
-  print("building dual pde fields");
+  double t0 = time();
+  double t1 = time();
+  print("dual pde fields built in %f seconds", t1-t0);
 }
 
 void Mechanics::build_error()
 {
-  print("building error fields");
+  double t0 = time();
+  double t1 = time();
+  print("error fields built in %f seconds", t1-t0);
 }
 
 void Mechanics::project_state()
@@ -131,6 +116,27 @@ unsigned Mechanics::get_offset(std::string const& var_name)
 {
   CHECK(offsets.count(var_name));
   return offsets[var_name];
+}
+
+void Mechanics::set_primal()
+{
+  is_primal = true;
+  is_dual = false;
+  is_error = false;
+}
+
+void Mechanics::set_dual()
+{
+  is_primal = false;
+  is_dual = false;
+  is_error = false;
+}
+
+void Mechanics::set_error()
+{
+  is_primal = false;
+  is_dual = false;
+  is_error = true;
 }
 
 void Mechanics::setup_params()
