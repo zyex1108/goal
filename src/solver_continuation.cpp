@@ -77,6 +77,7 @@ static void check_regression(
 void SolverContinuation::solve()
 {
   mechanics->build_primal();
+  sol_info->ovlp_solution->putScalar(0.0);
   for (unsigned step=1; step <= num_steps; ++step) {
     print("*** Continuation Step: (%u)", step);
     print("*** from time:         %f", t_old);

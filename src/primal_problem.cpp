@@ -48,7 +48,6 @@ PrimalProblem::PrimalProblem(
   validate_params(params);
   tolerance = params->get<double>("nonlinear: tolerance");
   max_iters = params->get<unsigned>("nonlinear: max iters");
-  sol_info->ovlp_solution->putScalar(0.0);
 }
 
 struct PrimalInfo
