@@ -46,6 +46,6 @@ PHX_EVALUATE_FIELDS(QoIAvgDisplacement, workset)
   }
 }
 
-GOAL_INSTANTIATE_JACOBIAN(QoIAvgDisplacement)
+GOAL_INSTANTIATE_ALL(QoIAvgDisplacement)
 
 }
