@@ -110,25 +110,48 @@ evaluateFields(typename Traits::EvalData workset)
   }
 
   Teuchos::Array<LO> cols(num_dofs);
-  for (unsigned elem=0; elem < workset.size; ++elem) {
-    apf::MeshEntity* e = workset.ents[elem];
-    
-    unsigned idx=0;
-    for (unsigned node=0; node < num_nodes; ++node) {
-      for (unsigned eq=0; eq < num_eqs; ++eq) {
-        cols[idx] = mesh->get_lid(e, node, eq);
-        idx++;
+
+  if (! workset.is_adjoint) {
+    for (unsigned elem=0; elem < workset.size; ++elem) {
+      apf::MeshEntity* e = workset.ents[elem];
+      unsigned idx=0;
+      for (unsigned node=0; node < num_nodes; ++node) {
+        for (unsigned eq=0; eq < num_eqs; ++eq) {
+          cols[idx] = mesh->get_lid(e, node, eq);
+          idx++;
+        }
+      }
+      for (unsigned node=0; node < num_nodes; ++node) {
+        for (unsigned eq=0; eq < num_eqs; ++eq) {
+          LO row = mesh->get_lid(e, node, eq);
+          FadType v = resid[eq](elem, node);
+          J->sumIntoLocalValues(
+              row, cols, arrayView(&(v.fastAccessDx(0)), num_dofs));
+          if (fill_resid)
+            r[row] += resid[eq](elem, node).val();
+        }
       }
     }
+  }
 
-    for (unsigned node=0; node < num_nodes; ++node) {
-      for (unsigned eq=0; eq < num_eqs; ++eq) {
-        LO row = mesh->get_lid(e, node, eq);
-        FadType v = resid[eq](elem, node);
-        J->sumIntoLocalValues(
-            row, cols, arrayView(&(v.fastAccessDx(0)), num_dofs));
-        if (fill_resid)
-          r[row] += resid[eq](elem, node).val();
+  else {
+    for (unsigned elem=0; elem < workset.size; ++elem) {
+      apf::MeshEntity* e = workset.ents[elem];
+      unsigned idx=0;
+      for (unsigned node=0; node < num_nodes; ++node) {
+        for (unsigned eq=0; eq < num_eqs; ++eq) {
+          cols[idx] = mesh->get_lid(e, node, eq);
+          idx++;
+        }
+      }
+      for (unsigned node=0; node < num_nodes; ++node) {
+        for (unsigned eq=0; eq < num_eqs; ++eq) {
+          LO row = mesh->get_lid(e, node, eq);
+          FadType v = resid[eq](elem, node);
+          for (unsigned dof=0; dof < num_dofs; ++dof)
+            J->sumIntoLocalValues(cols[dof], arrayView(&row, 1),
+                arrayView(&(v.fastAccessDx(dof)), 1));
+        }
       }
     }
   }
