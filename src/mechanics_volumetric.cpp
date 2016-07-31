@@ -3,6 +3,8 @@
 #include "layouts.hpp"
 #include "mesh.hpp"
 #include "control.hpp"
+#include "assert_param.hpp"
+
 #include "ev_basis_functions.hpp"
 #include "ev_gather_solution.hpp"
 #include "ev_dof_interpolation.hpp"
@@ -15,6 +17,7 @@
 #include "ev_mechanics_residual.hpp"
 #include "ev_pressure_residual.hpp"
 #include "ev_scatter_residual.hpp"
+#include "ev_qoi_avg_displacement.hpp"
 
 namespace goal {
 
@@ -153,51 +156,77 @@ void goal::Mechanics::register_volumetric(
     fm->template registerEvaluator<EvalT>(ev);
   }
 
-  { /* mechanics residual */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<std::string>("BF Name", "BF");
-    p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
-    p->set<std::string>("Weighted Dv Name", "wDv");
-    p->set<std::string>("First PK Name", "first_pk");
-    ev = rcp(new MechanicsResidual<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
+  if (is_primal || is_dual) {
+
+    { /* mechanics residual */
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<std::string>("BF Name", "BF");
+      p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
+      p->set<std::string>("Weighted Dv Name", "wDv");
+      p->set<std::string>("First PK Name", "first_pk");
+      ev = rcp(new MechanicsResidual<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+    }
+
+    if (have_pressure_eq) { /* element size */
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<std::string>("BF Name", "BF");
+      p->set<std::string>("Size Name", "size");
+      ev = rcp(new ElemSize<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+    }
+
+    if (have_pressure_eq) { /* pressure residual */
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<RCP<const ParameterList> >("Material Params", mp);
+      p->set<bool>("Small Strain", small_strain);
+      p->set<std::string>("Pressure Name", "p");
+      p->set<std::string>("Size Name", "size");
+      p->set<std::string>("Weighted Dv Name", "wDv");
+      p->set<std::string>("BF Name", "BF");
+      p->set<std::string>("Def Grad Name", "F");
+      p->set<std::string>("Det Def Grad Name", "J");
+      p->set<std::string>("Cauchy Name", "cauchy");
+      ev = rcp(new PressureResidual<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+    }
+
+    { /* scatter residuals */
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<RCP<Mesh> >("Mesh", mesh);
+      p->set<Teuchos::Array<std::string> >("DOF Names", var_names[0]);
+      ev = rcp(new ScatterResidual<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+      PHX::Tag<typename EvalT::ScalarT> tag("Scatter Residual", dl->dummy);
+      fm->requireField<EvalT>(tag);
+    }
+
   }
 
-  if (have_pressure_eq) { /* element size */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<std::string>("BF Name", "BF");
-    p->set<std::string>("Size Name", "size");
-    ev = rcp(new ElemSize<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-  }
+  if (is_dual) {
 
-  if (have_pressure_eq) { /* pressure residual */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<const ParameterList> >("Material Params", mp);
-    p->set<bool>("Small Strain", small_strain);
-    p->set<std::string>("Pressure Name", "p");
-    p->set<std::string>("Size Name", "size");
-    p->set<std::string>("Weighted Dv Name", "wDv");
-    p->set<std::string>("BF Name", "BF");
-    p->set<std::string>("Def Grad Name", "F");
-    p->set<std::string>("Det Def Grad Name", "J");
-    p->set<std::string>("Cauchy Name", "cauchy");
-    ev = rcp(new PressureResidual<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-  }
+    /* get the quantity of interest parameters */
+    assert_param(params, "qoi");
+    RCP<const ParameterList> qoi_params = rcpFromRef(params->sublist("qoi"));
+    std::string qoi_name = qoi_params->get<std::string>("name");
 
-  { /* scatter residuals */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<Mesh> >("Mesh", mesh);
-    p->set<Teuchos::Array<std::string> >("DOF Names", var_names[0]);
-    ev = rcp(new ScatterResidual<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-    PHX::Tag<typename EvalT::ScalarT> tag("Scatter Residual", dl->dummy);
-    fm->requireField<EvalT>(tag);
+    if (qoi_name == "avg displacement") {
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
+      p->set<std::string>("Weighted Dv Name", "wDv");
+      p->set<std::string>("Avg Displacement Name", qoi_name);
+      ev = rcp(new QoIAvgDisplacement<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+    }
+
+    else
+      fail("unknown qoi name: %s", qoi_name.c_str());
+
   }
 
 }
