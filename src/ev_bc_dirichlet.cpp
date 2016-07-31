@@ -178,9 +178,11 @@ apply_bc(
   std::string const& val = a[2];
 
   bool fill_res = (workset.r != Teuchos::null);
+  bool fill_qoi = (workset.q != Teuchos::null);
 
   ArrayRCP<const ST> sol;
   ArrayRCP<ST> res;
+  ArrayRCP<ST> qoi;
 
   if (fill_res) {
     CHECK(workset.u != Teuchos::null);
@@ -190,6 +192,12 @@ apply_bc(
     res = workset.r->get1dViewNonConst();
     CHECK(sol != Teuchos::null);
     CHECK(res != Teuchos::null);
+  }
+
+  if (fill_qoi) {
+    CHECK(workset.q != Teuchos::null);
+    qoi = workset.q->get1dViewNonConst();
+    CHECK(qoi != Teuchos::null);
   }
 
   Teuchos::Array<LO> index(1);
@@ -213,6 +221,9 @@ apply_bc(
       double v = get_bc_val(val, mesh, node, t);
       res[row] = sol[row] - v;
     }
+
+    if (fill_qoi)
+      qoi[row] = 0.0;
 
     index[0] = row;
     num_entries = J->getNumEntriesInLocalRow(row);
