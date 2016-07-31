@@ -81,6 +81,16 @@ void Mechanics::build_primal()
 void Mechanics::build_dual()
 {
   double t0 = time();
+  set_dual();
+  typedef GoalTraits::Derivative D;
+  vfms.resize(mesh->get_num_elem_sets());
+  for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
+    vfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
+    std::string const& set = mesh->get_elem_set_name(i);
+    register_volumetric<D>(set, vfms[i]);
+  }
+  dfm = rcp(new PHX::FieldManager<GoalTraits>);
+  register_dirichlet<D>(dfm);
   double t1 = time();
   print("dual pde fields built in %f seconds", t1-t0);
 }
