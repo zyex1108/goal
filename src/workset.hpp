@@ -21,11 +21,13 @@ struct Workset
   RCP<MultiVector> u;
   RCP<Vector> r;
   RCP<Matrix> J;
-  RCP<Vector> z;
   double alpha;
   double beta;
   double gamma;
   std::vector<apf::MeshEntity*> ents;
+  bool is_adjoint;
+  RCP<Vector> z;
+  RCP<Vector> q;
 };
 
 }
