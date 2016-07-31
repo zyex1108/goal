@@ -51,8 +51,10 @@ SolverGoalContinuation::SolverGoalContinuation(
   mechanics = mechanics_create(params, mesh, enable_dynamics);
   sol_info = sol_info_create(mesh, enable_dynamics);
   primal = primal_create(params, mesh, mechanics, sol_info);
+  dual = dual_create(params, mesh, mechanics, sol_info);
   output = output_create(params, mesh, mechanics, sol_info);
   primal->set_coeffs(0.0, 0.0, 1.0);
+  dual->set_coeffs(0.0, 0.0, 1.0);
   t_old = params->get<double>("initial time");
   dt = params->get<double>("step size");
   num_steps = params->get<unsigned>("num steps");
@@ -61,8 +63,15 @@ SolverGoalContinuation::SolverGoalContinuation(
 
 void SolverGoalContinuation::solve()
 {
-  mechanics->build_primal();
   sol_info->ovlp_solution->putScalar(0.0);
+
+  mechanics->build_primal();
+  primal->set_time(t_new, t_old);
+  primal->solve();
+
+  mechanics->build_dual();
+  dual->set_time(t_new, t_old);
+  dual->solve();
 }
 
 }
