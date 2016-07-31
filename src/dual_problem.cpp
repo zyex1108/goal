@@ -49,10 +49,14 @@ void DualProblem::set_coeffs(double a, double b, double c)
 
 void DualProblem::compute_jacobian()
 {
+  double t0 = time();
+  double t1 = time();
+  print("  adjoint jacobian computed in %f seconds", t1-t0);
 }
 
 void DualProblem::solve()
 {
+  print("solving dual model");
 }
 
 RCP<DualProblem> dual_create(
