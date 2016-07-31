@@ -21,6 +21,7 @@ struct Workset
   RCP<MultiVector> u;
   RCP<Vector> r;
   RCP<Matrix> J;
+  RCP<Vector> z;
   double alpha;
   double beta;
   double gamma;
