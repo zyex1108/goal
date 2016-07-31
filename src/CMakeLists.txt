@@ -31,6 +31,7 @@ ev_elem_size.hpp
 ev_mechanics_residual.hpp
 ev_pressure_residual.hpp
 ev_scatter_residual.hpp
+ev_qoi_avg_displacement.hpp
 ev_bc_dirichlet.hpp
 solver.hpp
 solver_continuation.hpp
@@ -67,6 +68,7 @@ ev_elem_size.cpp
 ev_mechanics_residual.cpp
 ev_pressure_residual.cpp
 ev_scatter_residual.cpp
+ev_qoi_avg_displacement.cpp
 ev_bc_dirichlet.cpp
 solver.cpp
 solver_continuation.cpp
