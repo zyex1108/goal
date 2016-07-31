@@ -158,6 +158,11 @@ void DualProblem::compute_jacobian()
 void DualProblem::solve()
 {
   print("solving dual model");
+  compute_jacobian();
+  RCP<Vector> z = sol_info->owned_dual;
+  RCP<Vector> q = sol_info->owned_qoi;
+  RCP<Matrix> J = sol_info->owned_jacobian;
+  solve_linear_system(params, J, z, q);
 }
 
 RCP<DualProblem> dual_create(
