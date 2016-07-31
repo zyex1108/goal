@@ -39,7 +39,7 @@ void goal::Mechanics::register_dirichlet(FieldManager fm)
 }
 
 template void goal::Mechanics::
-register_dirichlet<goal::GoalTraits::Residual>(FieldManager fm);
+register_dirichlet<goal::GoalTraits::Forward>(FieldManager fm);
 
 template void goal::Mechanics::
-register_dirichlet<goal::GoalTraits::Jacobian>(FieldManager fm);
+register_dirichlet<goal::GoalTraits::Derivative>(FieldManager fm);

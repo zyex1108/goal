@@ -7,7 +7,7 @@
 namespace goal {
 
 template <typename Traits>
-ScatterQoI<GoalTraits::Residual, Traits>::
+ScatterQoI<GoalTraits::Forward, Traits>::
 ScatterQoI(ParameterList const& p) :
   dl      (p.get<RCP<Layouts> >("Layouts")),
   qoi     (p.get<std::string>("QoI Name"), dl->elem_scalar)
@@ -19,7 +19,7 @@ ScatterQoI(ParameterList const& p) :
 }
 
 template <typename Traits>
-void ScatterQoI<GoalTraits::Residual, Traits>::
+void ScatterQoI<GoalTraits::Forward, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -28,13 +28,13 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void ScatterQoI<GoalTraits::Residual, Traits>::
+void ScatterQoI<GoalTraits::Forward, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
 }
 
 template <typename Traits>
-ScatterQoI<GoalTraits::Jacobian, Traits>::
+ScatterQoI<GoalTraits::Derivative, Traits>::
 ScatterQoI(ParameterList const& p) :
   dl      (p.get<RCP<Layouts> >("Layouts")),
   mesh    (p.get<RCP<Mesh> >("Mesh")),
@@ -47,7 +47,7 @@ ScatterQoI(ParameterList const& p) :
 }
 
 template <typename Traits>
-void ScatterQoI<GoalTraits::Jacobian, Traits>::
+void ScatterQoI<GoalTraits::Derivative, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -56,7 +56,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void ScatterQoI<GoalTraits::Jacobian, Traits>::
+void ScatterQoI<GoalTraits::Derivative, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
 }

@@ -13,7 +13,7 @@
 namespace goal {
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Residual, Traits>::
+void BCDirichlet<GoalTraits::Forward, Traits>::
 validate_params()
 {
   using Teuchos::Array;
@@ -50,7 +50,7 @@ static double get_bc_val(
 }
 
 template <typename Traits>
-BCDirichlet<GoalTraits::Residual, Traits>::
+BCDirichlet<GoalTraits::Forward, Traits>::
 BCDirichlet(ParameterList const& p) :
   dl        (p.get<RCP<Layouts> >("Layouts")),
   mesh      (p.get<RCP<Mesh> >("Mesh")),
@@ -66,7 +66,7 @@ BCDirichlet(ParameterList const& p) :
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Residual, Traits>::
+void BCDirichlet<GoalTraits::Forward, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -74,7 +74,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Residual, Traits>::
+void BCDirichlet<GoalTraits::Forward, Traits>::
 apply_bc(
     typename Traits::EvalData workset,
     Teuchos::Array<std::string> const& a)
@@ -106,7 +106,7 @@ apply_bc(
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Residual, Traits>::
+void BCDirichlet<GoalTraits::Forward, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   using Teuchos::Array;
@@ -122,7 +122,7 @@ evaluateFields(typename Traits::EvalData workset)
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Jacobian, Traits>::
+void BCDirichlet<GoalTraits::Derivative, Traits>::
 validate_params()
 {
   using Teuchos::Array;
@@ -142,7 +142,7 @@ validate_params()
 }
 
 template <typename Traits>
-BCDirichlet<GoalTraits::Jacobian, Traits>::
+BCDirichlet<GoalTraits::Derivative, Traits>::
 BCDirichlet(ParameterList const& p) :
   dl        (p.get<RCP<Layouts> >("Layouts")),
   mesh      (p.get<RCP<Mesh> >("Mesh")),
@@ -158,7 +158,7 @@ BCDirichlet(ParameterList const& p) :
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Jacobian, Traits>::
+void BCDirichlet<GoalTraits::Derivative, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -166,7 +166,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Jacobian, Traits>::
+void BCDirichlet<GoalTraits::Derivative, Traits>::
 apply_bc(
     typename Traits::EvalData workset,
     Teuchos::Array<std::string> const& a)
@@ -227,7 +227,7 @@ apply_bc(
 }
 
 template <typename Traits>
-void BCDirichlet<GoalTraits::Jacobian, Traits>::
+void BCDirichlet<GoalTraits::Derivative, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   using Teuchos::Array;

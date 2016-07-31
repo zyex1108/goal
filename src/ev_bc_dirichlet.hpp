@@ -15,9 +15,9 @@ struct Layouts;
 template <typename EvalT, typename Traits> class BCDirichlet;
 
 template <typename Traits>
-class BCDirichlet<GoalTraits::Residual, Traits> :
+class BCDirichlet<GoalTraits::Forward, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Residual, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Forward, Traits>
 {
   public:
 
@@ -31,7 +31,7 @@ class BCDirichlet<GoalTraits::Residual, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Residual::ScalarT ScalarT;
+    typedef typename GoalTraits::Forward::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;
@@ -46,9 +46,9 @@ class BCDirichlet<GoalTraits::Residual, Traits> :
 };
 
 template <typename Traits>
-class BCDirichlet<GoalTraits::Jacobian, Traits> :
+class BCDirichlet<GoalTraits::Derivative, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Jacobian, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Derivative, Traits>
 {
   public:
 
@@ -62,7 +62,7 @@ class BCDirichlet<GoalTraits::Jacobian, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Jacobian::ScalarT ScalarT;
+    typedef typename GoalTraits::Derivative::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;

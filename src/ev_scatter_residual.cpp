@@ -11,7 +11,7 @@ using Teuchos::ArrayRCP;
 using Teuchos::arrayView;
 
 template <typename Traits>
-ScatterResidual<GoalTraits::Residual, Traits>::
+ScatterResidual<GoalTraits::Forward, Traits>::
 ScatterResidual(ParameterList const& p) :
   dl        (p.get<RCP<Layouts> >("Layouts")),
   mesh      (p.get<RCP<Mesh> >("Mesh")),
@@ -33,7 +33,7 @@ ScatterResidual(ParameterList const& p) :
 }
 
 template <typename Traits>
-void ScatterResidual<GoalTraits::Residual, Traits>::
+void ScatterResidual<GoalTraits::Forward, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -43,7 +43,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void ScatterResidual<GoalTraits::Residual, Traits>::
+void ScatterResidual<GoalTraits::Forward, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   CHECK(workset.r != Teuchos::null);
@@ -62,7 +62,7 @@ evaluateFields(typename Traits::EvalData workset)
 }
 
 template <typename Traits>
-ScatterResidual<GoalTraits::Jacobian, Traits>::
+ScatterResidual<GoalTraits::Derivative, Traits>::
 ScatterResidual(ParameterList const& p) :
   dl        (p.get<RCP<Layouts> >("Layouts")),
   mesh      (p.get<RCP<Mesh> >("Mesh")),
@@ -85,7 +85,7 @@ ScatterResidual(ParameterList const& p) :
 }
 
 template <typename Traits>
-void ScatterResidual<GoalTraits::Jacobian, Traits>::
+void ScatterResidual<GoalTraits::Derivative, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -95,7 +95,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void ScatterResidual<GoalTraits::Jacobian, Traits>::
+void ScatterResidual<GoalTraits::Derivative, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   CHECK(workset.J != Teuchos::null);

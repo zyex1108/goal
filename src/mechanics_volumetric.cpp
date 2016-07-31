@@ -246,9 +246,9 @@ void goal::Mechanics::register_volumetric(
 /* ETI */
 
 template void goal::Mechanics::
-register_volumetric<goal::GoalTraits::Residual>(
+register_volumetric<goal::GoalTraits::Forward>(
     std::string const& set, FieldManager fm);
 
 template void goal::Mechanics::
-register_volumetric<goal::GoalTraits::Jacobian>(
+register_volumetric<goal::GoalTraits::Derivative>(
     std::string const& set, FieldManager fm);

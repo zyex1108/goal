@@ -113,17 +113,17 @@ static void compute_volumetric_residual(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Residual R;
+  typedef GoalTraits::Forward F;
   FieldManagers f = mech->get_volumetric();
   Workset ws;
   load_overlap_solution(ws, s);
   load_primal_info(ws, info);
   for (unsigned set_idx=0; set_idx < f.size(); ++set_idx) {
-    f[set_idx]->postRegistrationSetupForType<R>(NULL);
+    f[set_idx]->postRegistrationSetupForType<F>(NULL);
     unsigned num_ws = m->get_num_worksets(set_idx);
     for (unsigned ws_idx=0; ws_idx < num_ws; ++ws_idx) {
       load_mesh_info(ws, m, set_idx, ws_idx);
-      f[set_idx]->evaluateFields<R>(ws);
+      f[set_idx]->evaluateFields<F>(ws);
     }
   }
 }
@@ -134,13 +134,13 @@ static void compute_neumann_residual(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Residual R;
+  typedef GoalTraits::Forward F;
   FieldManager f = mech->get_neumann();
   Workset ws;
   load_overlap_solution(ws, s);
   load_primal_info(ws, info);
-  f->postRegistrationSetupForType<R>(NULL);
-  f->evaluateFields<R>(ws);
+  f->postRegistrationSetupForType<F>(NULL);
+  f->evaluateFields<F>(ws);
 }
 
 static void compute_dirichlet_residual(
@@ -149,13 +149,13 @@ static void compute_dirichlet_residual(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Residual R;
+  typedef GoalTraits::Forward F;
   FieldManager f = mech->get_dirichlet();
   Workset ws;
   load_owned_solution(ws, s);
   load_primal_info(ws, info);
-  f->postRegistrationSetupForType<R>(NULL);
-  f->evaluateFields<R>(ws);
+  f->postRegistrationSetupForType<F>(NULL);
+  f->evaluateFields<F>(ws);
 }
 
 void PrimalProblem::compute_residual()
@@ -179,7 +179,7 @@ static void compute_volumetric_jacobian(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Jacobian J;
+  typedef GoalTraits::Derivative D;
   FieldManagers f = mech->get_volumetric();
   Workset ws;
   load_overlap_solution(ws, s);
@@ -187,12 +187,12 @@ static void compute_volumetric_jacobian(
   for (unsigned set_idx=0; set_idx < f.size(); ++set_idx) {
     std::vector<PHX::index_size_type> dd;
     dd.push_back(m->get_num_elem_dofs());
-    f[set_idx]->setKokkosExtendedDataTypeDimensions<J>(dd);
-    f[set_idx]->postRegistrationSetupForType<J>(NULL);
+    f[set_idx]->setKokkosExtendedDataTypeDimensions<D>(dd);
+    f[set_idx]->postRegistrationSetupForType<D>(NULL);
     unsigned num_ws = m->get_num_worksets(set_idx);
     for (unsigned ws_idx=0; ws_idx < num_ws; ++ws_idx) {
       load_mesh_info(ws, m, set_idx, ws_idx);
-      f[set_idx]->evaluateFields<J>(ws);
+      f[set_idx]->evaluateFields<D>(ws);
     }
   }
 }
@@ -203,16 +203,16 @@ static void compute_neumann_jacobian(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Jacobian J;
+  typedef GoalTraits::Derivative D;
   FieldManager f = mech->get_neumann();
   Workset ws;
   load_overlap_solution(ws, s);
   load_primal_info(ws, info);
   std::vector<PHX::index_size_type> dd;
   dd.push_back(m->get_num_elem_dofs());
-  f->setKokkosExtendedDataTypeDimensions<J>(dd);
-  f->postRegistrationSetupForType<J>(NULL);
-  f->evaluateFields<J>(ws);
+  f->setKokkosExtendedDataTypeDimensions<D>(dd);
+  f->postRegistrationSetupForType<D>(NULL);
+  f->evaluateFields<D>(ws);
 }
 
 static void compute_dirichlet_jacobian(
@@ -221,16 +221,16 @@ static void compute_dirichlet_jacobian(
     RCP<SolutionInfo> s,
     PrimalInfo* info)
 {
-  typedef GoalTraits::Jacobian J;
+  typedef GoalTraits::Derivative D;
   FieldManager f = mech->get_dirichlet();
   Workset ws;
   load_owned_solution(ws, s);
   load_primal_info(ws, info);
   std::vector<PHX::index_size_type> dd;
   dd.push_back(m->get_num_elem_dofs());
-  f->setKokkosExtendedDataTypeDimensions<J>(dd);
-  f->postRegistrationSetupForType<J>(NULL);
-  f->evaluateFields<J>(ws);
+  f->setKokkosExtendedDataTypeDimensions<D>(dd);
+  f->postRegistrationSetupForType<D>(NULL);
+  f->evaluateFields<D>(ws);
 }
 
 void PrimalProblem::compute_jacobian()

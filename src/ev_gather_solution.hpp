@@ -17,9 +17,9 @@ template <typename EvalT, typename Traits> class GatherSolution;
 /* residual specialization */
 
 template <typename Traits>
-class GatherSolution<GoalTraits::Residual, Traits> :
+class GatherSolution<GoalTraits::Forward, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Residual, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Forward, Traits>
 {
   public:
 
@@ -33,7 +33,7 @@ class GatherSolution<GoalTraits::Residual, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Residual::ScalarT ScalarT;
+    typedef typename GoalTraits::Forward::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;
@@ -50,9 +50,9 @@ class GatherSolution<GoalTraits::Residual, Traits> :
 /* jacobian specialization */
 
 template <typename Traits>
-class GatherSolution<GoalTraits::Jacobian, Traits> :
+class GatherSolution<GoalTraits::Derivative, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Jacobian, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Derivative, Traits>
 {
   public:
 
@@ -66,7 +66,7 @@ class GatherSolution<GoalTraits::Jacobian, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Jacobian::ScalarT ScalarT;
+    typedef typename GoalTraits::Derivative::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;

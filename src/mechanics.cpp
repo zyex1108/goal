@@ -59,21 +59,21 @@ void Mechanics::build_primal()
 {
   double t0 = time();
   set_primal();
-  typedef GoalTraits::Residual R;
-  typedef GoalTraits::Jacobian J;
+  typedef GoalTraits::Forward F;
+  typedef GoalTraits::Derivative D;
   vfms.resize(mesh->get_num_elem_sets());
   for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
     vfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
     std::string const& set = mesh->get_elem_set_name(i);
-    register_volumetric<R>(set, vfms[i]);
-    register_volumetric<J>(set, vfms[i]);
+    register_volumetric<F>(set, vfms[i]);
+    register_volumetric<D>(set, vfms[i]);
   }
   nfm = rcp(new PHX::FieldManager<GoalTraits>);
   dfm = rcp(new PHX::FieldManager<GoalTraits>);
-  register_neumann<R>(nfm);
-  register_neumann<J>(nfm);
-  register_dirichlet<R>(dfm);
-  register_dirichlet<J>(dfm);
+  register_neumann<F>(nfm);
+  register_neumann<D>(nfm);
+  register_dirichlet<F>(dfm);
+  register_dirichlet<D>(dfm);
   double t1 = time();
   print("primal pde fields built in %f seconds", t1-t0);
 }

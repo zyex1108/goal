@@ -14,9 +14,9 @@ class Mesh;
 template <typename EvalT, typename Traits> class ScatterQoI;
 
 template <typename Traits>
-class ScatterQoI<GoalTraits::Residual, Traits> :
+class ScatterQoI<GoalTraits::Forward, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Residual, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Forward, Traits>
 {
   public:
 
@@ -30,7 +30,7 @@ class ScatterQoI<GoalTraits::Residual, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Residual::ScalarT ScalarT;
+    typedef typename GoalTraits::Forward::ScalarT ScalarT;
 
     RCP<Layouts> dl;
 
@@ -38,9 +38,9 @@ class ScatterQoI<GoalTraits::Residual, Traits> :
 };
 
 template <typename Traits>
-class ScatterQoI<GoalTraits::Jacobian, Traits> :
+class ScatterQoI<GoalTraits::Derivative, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Jacobian, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Derivative, Traits>
 {
   public:
 
@@ -54,7 +54,7 @@ class ScatterQoI<GoalTraits::Jacobian, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Jacobian::ScalarT ScalarT;
+    typedef typename GoalTraits::Derivative::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;
