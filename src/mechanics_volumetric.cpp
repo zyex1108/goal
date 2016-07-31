@@ -18,6 +18,7 @@
 #include "ev_pressure_residual.hpp"
 #include "ev_scatter_residual.hpp"
 #include "ev_qoi_avg_displacement.hpp"
+#include "ev_scatter_qoi.hpp"
 
 namespace goal {
 
@@ -226,6 +227,17 @@ void goal::Mechanics::register_volumetric(
 
     else
       fail("unknown qoi name: %s", qoi_name.c_str());
+
+    { /* scatter qoi */
+      RCP<ParameterList> p = rcp(new ParameterList);
+      p->set<RCP<Layouts> >("Layouts", dl);
+      p->set<RCP<Mesh> >("Mesh", mesh);
+      p->set<std::string>("QoI Name", qoi_name);
+      ev = rcp(new ScatterQoI<EvalT, GoalTraits>(*p));
+      fm->template registerEvaluator<EvalT>(ev);
+      PHX::Tag<typename EvalT::ScalarT> tag("Scatter QoI", dl->dummy);
+      fm->requireField<EvalT>(tag);
+    }
 
   }
 
