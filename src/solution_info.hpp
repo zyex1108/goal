@@ -15,15 +15,23 @@ class SolutionInfo
 {
   public:
     void resize(RCP<Mesh> m, bool enable_dynamics);
+    void create_dual_vectors(RCP<Mesh> m);
+    void destroy_dual_vectors();
     void gather_solution();
     void scatter_solution();
+    void scatter_dual();
     void gather_residual();
+    void gather_qoi();
     void gather_jacobian();
     RCP<MultiVector> owned_solution;
     RCP<Vector> owned_residual;
+    RCP<Vector> owned_qoi;
+    RCP<Vector> owned_dual;
     RCP<Matrix> owned_jacobian;
     RCP<MultiVector> ovlp_solution;
     RCP<Vector> ovlp_residual;
+    RCP<Vector> ovlp_qoi;
+    RCP<Vector> ovlp_dual;
     RCP<Matrix> ovlp_jacobian;
     RCP<Export> exporter;
     RCP<Import> importer;
