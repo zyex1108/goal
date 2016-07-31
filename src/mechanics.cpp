@@ -17,6 +17,7 @@ static RCP<ParameterList> get_valid_params(RCP<Mesh> m)
     std::string const& set  = m->get_elem_set_name(i);
     p->sublist(set);
   }
+  p->sublist("qoi");
   return p;
 }
 
