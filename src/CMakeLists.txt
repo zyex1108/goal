@@ -45,6 +45,7 @@ assert_param.cpp
 control.cpp
 dimension.cpp
 layouts.cpp
+workset.cpp
 mesh.cpp
 solution_info.cpp
 state_fields.cpp

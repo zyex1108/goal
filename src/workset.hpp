@@ -14,6 +14,7 @@ using Teuchos::RCP;
 
 struct Workset
 {
+  Workset();
   unsigned size;
   std::string set;
   double t_new;
