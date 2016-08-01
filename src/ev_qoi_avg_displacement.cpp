@@ -16,8 +16,8 @@ PHX_EVALUATOR_CTOR(QoIAvgDisplacement, p) :
   num_qps = dl->node_qp_vector->dimension(2);
   num_dims = dl->node_qp_vector->dimension(3);
 
-  disp.resize(disp_names.size());
-  for (unsigned i=0; i < disp_names.size(); ++i) {
+  disp.resize(num_dims);
+  for (unsigned i=0; i < num_dims; ++i) {
     get_field(disp_names[i], dl, disp[i]);
     this->addDependentField(disp[i]);
   }
@@ -30,7 +30,7 @@ PHX_EVALUATOR_CTOR(QoIAvgDisplacement, p) :
 PHX_POST_REGISTRATION_SETUP(QoIAvgDisplacement, data, fm)
 {
   this->utils.setFieldData(wDv, fm);
-  for (unsigned i=0; i < disp_names.size(); ++i)
+  for (unsigned i=0; i < num_dims; ++i)
     this->utils.setFieldData(disp[i], fm);
   this->utils.setFieldData(avg_disp, fm);
 }
