@@ -139,7 +139,7 @@ void Mechanics::set_primal()
 void Mechanics::set_dual()
 {
   is_primal = false;
-  is_dual = false;
+  is_dual = true;
   is_error = false;
 }
 
@@ -205,7 +205,7 @@ void Mechanics::setup_fields()
   Teuchos::Array<std::string> disp;
   disp.push_back("ux");
   if (d > 1) disp.push_back("uy");
-  if (d > 1) disp.push_back("uz");
+  if (d > 2) disp.push_back("uz");
   fields["disp"] = disp;
 
   if (supports_dynamics) {
