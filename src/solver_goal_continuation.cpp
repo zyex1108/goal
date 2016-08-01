@@ -70,8 +70,13 @@ void SolverGoalContinuation::solve()
   primal->solve();
 
   mechanics->build_dual();
+  sol_info->create_dual_vectors(mesh);
   dual->set_time(t_new, t_old);
   dual->solve();
+
+  output->write(0.0);
+
+  sol_info->destroy_dual_vectors();
 }
 
 }
