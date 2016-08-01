@@ -18,7 +18,7 @@ ScatterQoI(ParameterList const& p) :
   PHX::Tag<ScalarT> op(name, dl->dummy);
   this->addDependentField(qoi);
   this->addEvaluatedField(op);
-  this->setName("name");
+  this->setName(name);
 }
 
 template <typename Traits>
@@ -43,13 +43,13 @@ ScatterQoI(ParameterList const& p) :
   mesh    (p.get<RCP<Mesh> >("Mesh")),
   qoi     (p.get<std::string>("QoI Name"), dl->elem_scalar)
 {
-
+  num_nodes = dl->node_scalar->dimension(1);
 
   std::string name = "Scatter QoI";
   PHX::Tag<ScalarT> op(name, dl->dummy);
   this->addDependentField(qoi);
   this->addEvaluatedField(op);
-  this->setName("name");
+  this->setName(name);
 }
 
 template <typename Traits>
