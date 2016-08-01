@@ -17,17 +17,9 @@ struct GoalTraits : public PHX::TraitsBase
 {
   typedef double RealType;
   typedef Sacado::Fad::SLFad<RealType, GOAL_FAD_SIZE> FadType;
-  struct Residual
-  {
-    typedef RealType ScalarT;
-    static const std::string name;
-  };
-  struct Jacobian
-  {
-    typedef FadType ScalarT;
-    static const std::string name;
-  };
-  typedef Sacado::mpl::vector<Residual, Jacobian> EvalTypes;
+  struct Forward {typedef RealType ScalarT;};
+  struct Derivative {typedef FadType ScalarT;};
+  typedef Sacado::mpl::vector<Forward, Derivative> EvalTypes;
   typedef void* SetupData;
   typedef Workset& PreEvalData;
   typedef Workset& PostEvalData;
@@ -39,14 +31,14 @@ struct GoalTraits : public PHX::TraitsBase
 namespace PHX {
 
 template <>
-struct eval_scalar_types<goal::GoalTraits::Residual>
+struct eval_scalar_types<goal::GoalTraits::Forward>
 {
   typedef Sacado::mpl::vector<
     goal::GoalTraits::RealType> type;
 };
 
 template <>
-struct eval_scalar_types<goal::GoalTraits::Jacobian>
+struct eval_scalar_types<goal::GoalTraits::Derivative>
 {
   typedef Sacado::mpl::vector<
     goal::GoalTraits::FadType,
@@ -55,14 +47,14 @@ struct eval_scalar_types<goal::GoalTraits::Jacobian>
 
 }
 
-#define GOAL_INSTANTIATE_RESIDUAL(name) \
-  template class name<goal::GoalTraits::Residual, goal::GoalTraits>;
+#define GOAL_INSTANTIATE_FORWARD(name) \
+  template class name<goal::GoalTraits::Forward, goal::GoalTraits>;
 
-#define GOAL_INSTANTIATE_JACOBIAN(name) \
-  template class name<goal::GoalTraits::Jacobian, goal::GoalTraits>;
+#define GOAL_INSTANTIATE_DERIVATIVE(name) \
+  template class name<goal::GoalTraits::Derivative, goal::GoalTraits>;
 
 #define GOAL_INSTANTIATE_ALL(name) \
-  GOAL_INSTANTIATE_RESIDUAL(name) \
-  GOAL_INSTANTIATE_JACOBIAN(name)
+  GOAL_INSTANTIATE_FORWARD(name) \
+  GOAL_INSTANTIATE_DERIVATIVE(name)
 
 #endif

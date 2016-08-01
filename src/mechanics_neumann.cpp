@@ -12,8 +12,10 @@ void goal::Mechanics::register_neumann(FieldManager fm)
 
 }
 
-template void goal::Mechanics::
-register_neumann<goal::GoalTraits::Residual>(FieldManager fm);
+/* ETI */
 
 template void goal::Mechanics::
-register_neumann<goal::GoalTraits::Jacobian>(FieldManager fm);
+register_neumann<goal::GoalTraits::Forward>(FieldManager fm);
+
+template void goal::Mechanics::
+register_neumann<goal::GoalTraits::Derivative>(FieldManager fm);

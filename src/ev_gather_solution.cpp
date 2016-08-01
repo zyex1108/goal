@@ -13,7 +13,7 @@ const std::string sol_names[3] =
   "Solution Dot Dot"};
 
 template <typename Traits>
-GatherSolution<GoalTraits::Residual, Traits>::
+GatherSolution<GoalTraits::Forward, Traits>::
 GatherSolution(ParameterList const& p) :
   dl      (p.get<RCP<Layouts> >("Layouts")),
   mesh    (p.get<RCP<Mesh> >("Mesh")),
@@ -33,7 +33,7 @@ GatherSolution(ParameterList const& p) :
 }
 
 template <typename Traits>
-void GatherSolution<GoalTraits::Residual, Traits>::
+void GatherSolution<GoalTraits::Forward, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -43,7 +43,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void GatherSolution<GoalTraits::Residual, Traits>::
+void GatherSolution<GoalTraits::Forward, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   CHECK(workset.u != Teuchos::null);
@@ -64,7 +64,7 @@ evaluateFields(typename Traits::EvalData workset)
 }
 
 template <typename Traits>
-GatherSolution<GoalTraits::Jacobian, Traits>::
+GatherSolution<GoalTraits::Derivative, Traits>::
 GatherSolution(ParameterList const& p) :
   dl      (p.get<RCP<Layouts> >("Layouts")),
   mesh    (p.get<RCP<Mesh> >("Mesh")),
@@ -84,7 +84,7 @@ GatherSolution(ParameterList const& p) :
 }
 
 template <typename Traits>
-void GatherSolution<GoalTraits::Jacobian, Traits>::
+void GatherSolution<GoalTraits::Derivative, Traits>::
 postRegistrationSetup(
     typename Traits::SetupData d,
     PHX::FieldManager<Traits>& fm)
@@ -94,7 +94,7 @@ postRegistrationSetup(
 }
 
 template <typename Traits>
-void GatherSolution<GoalTraits::Jacobian, Traits>::
+void GatherSolution<GoalTraits::Derivative, Traits>::
 evaluateFields(typename Traits::EvalData workset)
 {
   CHECK(workset.u != Teuchos::null);

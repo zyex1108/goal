@@ -14,9 +14,9 @@ struct Layouts;
 template <typename EvalT, typename Traits> class ScatterResidual;
 
 template <typename Traits>
-class ScatterResidual<GoalTraits::Residual, Traits> :
+class ScatterResidual<GoalTraits::Forward, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Residual, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Forward, Traits>
 {
   public:
 
@@ -30,7 +30,7 @@ class ScatterResidual<GoalTraits::Residual, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Residual::ScalarT ScalarT;
+    typedef typename GoalTraits::Forward::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;
@@ -43,9 +43,9 @@ class ScatterResidual<GoalTraits::Residual, Traits> :
 };
 
 template <typename Traits>
-class ScatterResidual<GoalTraits::Jacobian, Traits> :
+class ScatterResidual<GoalTraits::Derivative, Traits> :
   public PHX::EvaluatorWithBaseImpl<Traits>,
-  public PHX::EvaluatorDerived<GoalTraits::Jacobian, Traits>
+  public PHX::EvaluatorDerived<GoalTraits::Derivative, Traits>
 {
   public:
 
@@ -59,7 +59,7 @@ class ScatterResidual<GoalTraits::Jacobian, Traits> :
 
   private:
 
-    typedef typename GoalTraits::Jacobian::ScalarT ScalarT;
+    typedef typename GoalTraits::Derivative::ScalarT ScalarT;
 
     RCP<Layouts> dl;
     RCP<Mesh> mesh;

@@ -112,7 +112,8 @@ static void attach_vector(
     RCP<const Vector> u,
     RCP<Mesh> mesh,
     RCP<Mechanics> mech,
-    Teuchos::Array<std::string> const& names)
+    Teuchos::Array<std::string> const& names,
+    Teuchos::Array<std::string> const& offset_names)
 {
   ArrayRCP<const ST> data = u->get1dView();
   apf::Mesh* m = mesh->get_apf_mesh();
@@ -127,7 +128,7 @@ static void attach_vector(
     if (! m->isOwned(node->entity)) continue;
     if (m->getType(node->entity) != apf::Mesh::VERTEX) continue;
     for (unsigned j=0; j < names.size(); ++j) {
-      unsigned eq = mech->get_offset(names[j]);
+      unsigned eq = mech->get_offset(offset_names[j]);
       LO row = mesh->get_lid(node, eq);
       double v = data[row];
       apf::setScalar(fields[j], node->entity, node->node, v);
@@ -147,7 +148,7 @@ static void attach_solutions(
   for (unsigned i=0; i < nv; ++i) {
     RCP<const Vector> u = sv->getVector(i);
     Teuchos::Array<std::string> names = mech->get_var_names(i);
-    attach_vector(u, mesh, mech, names);
+    attach_vector(u, mesh, mech, names, names);
   }
 }
 
@@ -166,6 +167,42 @@ static void destroy_solutions(
       CHECK(f);
       apf::destroyField(f);
     }
+  }
+}
+
+static Teuchos::Array<std::string> get_dual_names(RCP<Mechanics> mech)
+{
+  Teuchos::Array<std::string> names = mech->get_dof_names();
+  Teuchos::Array<std::string> dual_names(0);
+  for (unsigned i=0; i < names.size(); ++i)
+    dual_names.push_back(names[i] + "_adj");
+  return dual_names;
+}
+
+static void attach_dual_solutions(
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    RCP<SolutionInfo> s)
+{
+  if (s->owned_dual == Teuchos::null) return;
+  RCP<Vector> z = s->owned_dual;
+  Teuchos::Array<std::string> offset_names = mech->get_dof_names();
+  Teuchos::Array<std::string> dual_names = get_dual_names(mech);
+  attach_vector(z, mesh, mech, dual_names, offset_names);
+}
+
+static void destroy_dual_solutions(
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    RCP<SolutionInfo> s)
+{
+  if (s->owned_dual == Teuchos::null) return;
+  apf::Mesh* m = mesh->get_apf_mesh();
+  Teuchos::Array<std::string> names = get_dual_names(mech);
+  for (unsigned i=0; i < names.size(); ++i) {
+    apf::Field* f = m->findField(names[i].c_str());
+    CHECK(f);
+    apf::destroyField(f);
   }
 }
 
@@ -210,9 +247,11 @@ void Output::write(const double t)
   static unsigned my_out_interval = 0;
   if (my_out_interval++ % out_interval) return;
   attach_solutions(mesh, mechanics, sol_info);
+  attach_dual_solutions(mesh, mechanics, sol_info);
   if (save_stabilized) stabilize(mesh);
   write_vtk(t);
   destroy_solutions(mesh, mechanics, sol_info);
+  destroy_dual_solutions(mesh, mechanics, sol_info);
 }
 
 RCP<Output> output_create(

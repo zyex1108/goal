@@ -16,6 +16,7 @@ solution_info.hpp
 state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
+dual_problem.hpp
 linear_solver.hpp
 output.hpp
 ev_basis_functions.hpp
@@ -30,10 +31,12 @@ ev_elem_size.hpp
 ev_mechanics_residual.hpp
 ev_pressure_residual.hpp
 ev_scatter_residual.hpp
+ev_qoi_avg_displacement.hpp
+ev_scatter_qoi.hpp
 ev_bc_dirichlet.hpp
 solver.hpp
 solver_continuation.hpp
-solver_trapezoid.hpp
+solver_goal_continuation.hpp
 )
 
 set(SOURCES
@@ -42,7 +45,7 @@ assert_param.cpp
 control.cpp
 dimension.cpp
 layouts.cpp
-traits.cpp
+workset.cpp
 mesh.cpp
 solution_info.cpp
 state_fields.cpp
@@ -51,6 +54,7 @@ mechanics_volumetric.cpp
 mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
+dual_problem.cpp
 linear_solver.cpp
 output.cpp
 ev_basis_functions.cpp
@@ -65,10 +69,12 @@ ev_elem_size.cpp
 ev_mechanics_residual.cpp
 ev_pressure_residual.cpp
 ev_scatter_residual.cpp
+ev_qoi_avg_displacement.cpp
+ev_scatter_qoi.cpp
 ev_bc_dirichlet.cpp
 solver.cpp
 solver_continuation.cpp
-solver_trapezoid.cpp
+solver_goal_continuation.cpp
 )
 
 add_library(goalie ${SOURCES})

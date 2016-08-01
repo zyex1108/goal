@@ -14,6 +14,7 @@ using Teuchos::RCP;
 
 struct Workset
 {
+  Workset();
   unsigned size;
   std::string set;
   double t_new;
@@ -25,6 +26,9 @@ struct Workset
   double beta;
   double gamma;
   std::vector<apf::MeshEntity*> ents;
+  bool is_adjoint;
+  RCP<Vector> z;
+  RCP<Vector> q;
 };
 
 }
