@@ -46,46 +46,14 @@ PHX_POST_REGISTRATION_SETUP(FirstPK, data, fm)
 
 PHX_EVALUATE_FIELDS(FirstPK, workset)
 {
+  /* populate first pk tensor with cauchy tensor */
+  for (unsigned elem=0; elem < workset.size; ++elem)
+  for (unsigned qp=0; qp < num_qps; ++qp)
+  for (unsigned i=0; i < num_dims; ++i)
+  for (unsigned j=0; j < num_dims; ++j)
+    first_pk(elem,qp,i,j) = cauchy(elem,qp,i,j);
 
-  if (small_strain) {
-    for (unsigned elem=0; elem < workset.size; ++elem)
-    for (unsigned qp=0; qp < num_qps; ++qp)
-    for (unsigned i=0; i < num_dims; ++i)
-    for (unsigned j=0; j < num_dims; ++j)
-      first_pk(elem,qp,i,j) = cauchy(elem,qp,i,j);
-  }
-
-  else {
-
-    ScalarT J;
-    Intrepid2::Tensor<ScalarT> F(num_dims);
-    Intrepid2::Tensor<ScalarT> Finv(num_dims);
-    Intrepid2::Tensor<ScalarT> sigma(num_dims);
-    Intrepid2::Tensor<ScalarT> P(num_dims);
-    Intrepid2::Tensor<ScalarT> I(Intrepid2::eye<ScalarT>(num_dims));
-
-    for (unsigned elem=0; elem < workset.size; ++elem) {
-      for (unsigned qp=0; qp < num_qps; ++qp) {
-
-        J = det_def_grad(elem,qp);
-        for (unsigned i=0; i < num_dims; ++i) {
-          for (unsigned j=0; j < num_dims; ++j) {
-            F(i,j) = def_grad(elem,qp,i,j);
-            sigma(i,j) = cauchy(elem,qp,i,j);
-          }
-        }
-
-        Finv = Intrepid2::inverse(F);
-        P = J*sigma*Intrepid2::transpose(Finv);
-
-        for (unsigned i=0; i < num_dims; ++i)
-        for (unsigned j=0; j < num_dims; ++j)
-          first_pk(elem,qp,i,j) = P(i,j);
-
-      }
-    }
-  }
-
+  /* add in pressure if this is a mixed formulation */
   if (have_pressure) {
     for (unsigned elem=0; elem < workset.size; ++elem) {
       for (unsigned qp=0; qp < num_qps; ++qp) {
@@ -99,6 +67,31 @@ PHX_EVALUATE_FIELDS(FirstPK, workset)
     }
   }
 
+  /* pull back to the reference config if this is large strain */
+  if (! small_strain) {
+    ScalarT J;
+    Intrepid2::Tensor<ScalarT> F(num_dims);
+    Intrepid2::Tensor<ScalarT> Finv(num_dims);
+    Intrepid2::Tensor<ScalarT> sigma(num_dims);
+    Intrepid2::Tensor<ScalarT> P(num_dims);
+    Intrepid2::Tensor<ScalarT> I(Intrepid2::eye<ScalarT>(num_dims));
+    for (unsigned elem=0; elem < workset.size; ++elem) {
+      for (unsigned qp=0; qp < num_qps; ++qp) {
+        J = det_def_grad(elem,qp);
+        for (unsigned i=0; i < num_dims; ++i) {
+          for (unsigned j=0; j < num_dims; ++j) {
+            F(i,j) = def_grad(elem,qp,i,j);
+            sigma(i,j) = cauchy(elem,qp,i,j);
+          }
+        }
+        Finv = Intrepid2::inverse(F);
+        P = J*sigma*Intrepid2::transpose(Finv);
+        for (unsigned i=0; i < num_dims; ++i)
+        for (unsigned j=0; j < num_dims; ++j)
+          first_pk(elem,qp,i,j) = P(i,j);
+      }
+    }
+  }
 }
 
 GOAL_INSTANTIATE_ALL(FirstPK)

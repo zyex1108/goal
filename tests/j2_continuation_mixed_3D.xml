@@ -4,12 +4,12 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="0.002708611711448"/>
+  <Parameter name="regression: val" type="double" value="0.978063516160394"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/cube.dmg"/>
-    <Parameter name="mesh file" type="string" value="meshes/cube-serial.smb"/>
+    <Parameter name="mesh file" type="string" value="meshes/cube.smb"/>
     <Parameter name="assoc file" type="string" value="meshes/cube.txt"/>
     <Parameter name="ws size" type="unsigned int" value="100"/>
     <Parameter name="p order" type="unsigned int" value="1"/>
@@ -17,10 +17,13 @@
   </ParameterList>
 
   <ParameterList name="mechanics">
-    <Parameter name="model" type="string" value="linear elastic"/>
+    <Parameter name="model" type="string" value="j2"/>
+    <Parameter name="mixed formulation" type="bool" value="true"/>
     <ParameterList name="cube">
       <Parameter name="E" type="double" value="1000.0"/>
       <Parameter name="nu" type="double" value="0.25"/>
+      <Parameter name="K" type="double" value="100.0"/>
+      <Parameter name="Y" type="double" value="10.0"/>
     </ParameterList>
     <ParameterList name="dirichlet bcs">
       <Parameter name="bc 1" type="Array(string)" value="{ux,xmin,val=0.0}"/>
@@ -39,7 +42,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_elast_continuation_3D_serial"/>
+    <Parameter name="out file" type="string" value="out_j2_continuation_3D_serial"/>
   </ParameterList>
 
 </ParameterList>
