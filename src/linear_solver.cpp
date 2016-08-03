@@ -21,7 +21,7 @@ static RCP<ParameterList> get_ifpack2_params()
 {
   RCP<ParameterList> p = rcp(new ParameterList);
   p->set("fact: drop tolerance", 0.0);
-  p->set("fact: ilut level-of-fill", 6.0);
+  p->set("fact: ilut level-of-fill", 1.0);
   return p;
 }
 
