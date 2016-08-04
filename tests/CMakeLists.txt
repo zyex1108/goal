@@ -21,7 +21,7 @@ macro(setup_serial_test INPUT)
   add_test(${INPUT} ${VALGRIND} ${GOALEXE} ${INPUTXML})
 endmacro()
 
-add_subdirectory(meshes)
+file(COPY ./meshes DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 setup_serial_test(elast_continuation_2D_serial)
 setup_serial_test(elast_continuation_3D_serial)
