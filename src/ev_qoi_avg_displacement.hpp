@@ -1,4 +1,4 @@
-#ifndef goal_ev_qoi_avg_displacment_hpp
+#ifndef goal_ev_qoi_avg_displacement_hpp
 #define goal_ev_qoi_avg_displacement_hpp
 
 #include "phx_macros.hpp"
