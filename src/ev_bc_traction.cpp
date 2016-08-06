@@ -33,13 +33,13 @@ PHX_EVALUATOR_CTOR(BCTraction, p) :
   dl        (p.get<RCP<Layouts> >("Layouts")),
   mesh      (p.get<RCP<Mesh> >("Mesh")),
   mechanics (p.get<RCP<Mechanics> >("Mechanics")),
-  params    (p.get<RCP<const ParameterList> >("NBC Parameters"))
+  params    (p.get<RCP<const ParameterList> >("Parameters"))
 {
   validate_params();
   apf_mesh = mesh->get_apf_mesh();
   num_dims = mesh->get_num_dims();
 
-  std::string name = "Neumann BCs";
+  std::string name = "Traction BCs";
   PHX::Tag<ScalarT> op(name, dl->dummy);
   this->setName(name);
   this->addEvaluatedField(op);
