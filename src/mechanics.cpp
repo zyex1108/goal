@@ -13,6 +13,7 @@ static RCP<ParameterList> get_valid_params(RCP<Mesh> m)
   p->set<bool>("mixed formulation", false);
   p->sublist("dirichlet bcs");
   p->sublist("neumann bcs");
+  p->sublist("temperature");
   for (unsigned i=0; i < m->get_num_elem_sets(); ++i) {
     std::string const& set  = m->get_elem_set_name(i);
     p->sublist(set);
@@ -27,6 +28,11 @@ static void validate_params(RCP<const ParameterList> p, RCP<Mesh> m)
   assert_param(p, "dirichlet bcs");
   for (unsigned i=0; i < m->get_num_elem_sets(); ++i)
     assert_param(p, m->get_elem_set_name(i));
+  if (p->isSublist("temperature")) {
+    RCP<const ParameterList> tp = rcpFromRef(p->sublist("temperature"));
+    assert_param(tp, "value");
+    assert_param(tp, "reference");
+  }
   p->validateParameters(*get_valid_params(m), 0);
 }
 
@@ -155,7 +161,7 @@ void Mechanics::setup_params()
   model = params->get<std::string>("model");
   if (params->isParameter("mixed formulation"))
     have_pressure_eq = params->get<bool>("mixed formulation");
-  if (params->isParameter("temperature"))
+  if (params->isSublist("temperature"))
     have_temperature = true;
 }
 
