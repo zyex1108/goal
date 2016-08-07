@@ -18,10 +18,14 @@ PHX_EVALUATOR_CLASS(ModelElastic)
     RCP<Layouts> dl;
     RCP<StateFields> states;
     RCP<const ParameterList> params;
+    RCP<const ParameterList> temp_params;
     Teuchos::Array<std::string> disp_names;
+
+    bool have_temp;
 
     double E; /* elastic modulus */
     double nu; /* poisson's ratio */
+    double alpha; /* thermal expansion coefficient */
 
     unsigned num_nodes;
     unsigned num_qps;

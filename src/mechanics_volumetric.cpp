@@ -103,12 +103,17 @@ void goal::Mechanics::register_volumetric(
   /* material parameters */
   RCP<const ParameterList> mp = rcpFromRef(params->sublist(set));
 
+  /* temperature parameters */
+  RCP<const ParameterList> tp;
+  if (have_temperature) tp = rcpFromRef(params->sublist("temperature"));
+
   if (model == "linear elastic") { /* elastic model */
     small_strain = true;
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
     p->set<RCP<StateFields> >("State Fields", state_fields);
     p->set<RCP<const ParameterList> >("Material Params", mp);
+    p->set<RCP<const ParameterList> >("Temperature Params", tp);
     p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
     p->set<std::string>("Cauchy Name", "cauchy");
     ev = rcp(new ModelElastic<EvalT, GoalTraits>(*p));
