@@ -124,10 +124,11 @@ void goal::Mechanics::register_volumetric(
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
     p->set<RCP<StateFields> >("State Fields", state_fields);
+    p->set<RCP<const ParameterList> >("Material Params", mp);
+    p->set<RCP<const ParameterList> >("Temperature Params", tp);
     p->set<std::string>("Def Grad Name", "F");
     p->set<std::string>("Det Def Grad Name", "J");
     p->set<std::string>("Cauchy Name", "cauchy");
-    p->set<RCP<const ParameterList> >("Material Params", mp);
     ev = rcp(new ModelJ2<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
   }

@@ -18,11 +18,15 @@ PHX_EVALUATOR_CLASS(ModelJ2)
     RCP<Layouts> dl;
     RCP<StateFields> states;
     RCP<const ParameterList> params;
+    RCP<const ParameterList> temp_params;
+
+    bool have_temp;
 
     double E; /* elastic modulus */
     double nu; /* poisson's ratio */
     double K; /* hardening modulus */
     double Y; /* yield strength */
+    double alpha; /* thermal expansion coefficient */
 
     unsigned num_nodes;
     unsigned num_qps;
