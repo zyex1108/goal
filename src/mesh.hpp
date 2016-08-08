@@ -46,6 +46,7 @@ class Mesh
 
     apf::Mesh2* get_apf_mesh() {return mesh;}
     apf::FieldShape* get_apf_shape() {return shape;}
+    apf::GlobalNumbering* get_apf_numbering() {return numbering;}
     apf::DynamicArray<apf::Node> const& get_apf_nodes() {return nodes;}
 
     unsigned get_num_elem_qps() const;

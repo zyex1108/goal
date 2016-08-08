@@ -4,6 +4,7 @@
 #include "workset.hpp"
 #include "state_fields.hpp"
 #include "phx_utils.hpp"
+#include "expression.hpp"
 #include "assert_param.hpp"
 
 namespace goal {
@@ -13,13 +14,18 @@ static RCP<ParameterList> get_valid_params()
   RCP<ParameterList> p = rcp(new ParameterList);
   p->set<double>("E", 0.0);
   p->set<double>("nu", 0.0);
+  p->set<double>("alpha", 0.0);
   return p;
 }
 
-static void validate_params(RCP<const ParameterList> p)
+static void validate_params(
+    RCP<const ParameterList> p,
+    RCP<const ParameterList> tp)
 {
   assert_param(p, "E");
   assert_param(p, "nu");
+  if (tp != Teuchos::null)
+    assert_param(p, "alpha");
   p->validateParameters(*get_valid_params(), 0);
 }
 
@@ -27,12 +33,16 @@ PHX_EVALUATOR_CTOR(ModelElastic, p) :
   dl          (p.get<RCP<Layouts> >("Layouts")),
   states      (p.get<RCP<StateFields> >("State Fields")),
   params      (p.get<RCP<const ParameterList> >("Material Params")),
+  temp_params (p.get<RCP<const ParameterList> >("Temperature Params")),
   disp_names  (p.get<Teuchos::Array<std::string> >("Disp Names")),
   stress      (p.get<std::string>("Cauchy Name"), dl->qp_tensor)
 {
-  validate_params(params);
+  validate_params(params, temp_params);
   E = params->get<double>("E");
   nu = params->get<double>("nu");
+
+  have_temp = (Teuchos::nonnull(temp_params));
+  if (have_temp) alpha = params->get<double>("alpha");
 
   num_nodes = dl->node_qp_vector->dimension(1);
   num_qps = dl->node_qp_vector->dimension(2);
@@ -82,6 +92,20 @@ PHX_EVALUATE_FIELDS(ModelElastic, workset)
 
     }
   }
+
+  if (have_temp) {
+
+    double three_kappa = E/(1.0-2.0*nu);
+    std::string val = temp_params->get<std::string>("value");
+    double T = expression_eval(val,0,0,0,workset.t_new);
+    double T_ref = temp_params->get<double>("reference");
+
+    for (unsigned elem=0; elem < workset.size; ++elem)
+    for (unsigned qp=0; qp < num_qps; ++qp)
+    for (unsigned i=0; i < num_dims; ++i)
+      stress(elem,qp,i,i) -= three_kappa*alpha*(T-T_ref);
+  }
+
 }
 
 GOAL_INSTANTIATE_ALL(ModelElastic)

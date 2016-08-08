@@ -8,5 +8,3 @@ node set right 1
 1 6
 node set top 1 
 1 8
-facet set right 1
-1 6

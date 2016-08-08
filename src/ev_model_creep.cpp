@@ -195,6 +195,52 @@ PHX_EVALUATE_FIELDS(ModelCreep, workset)
 
       /* plastic increment - return mapping algorithm */
       else {
+
+        bool converged = false;
+        ScalarT H = 0.0;
+        ScalarT dH = 0.0;
+        ScalarT alpha = 0.0;
+        ScalarT res = 0.0;
+        unsigned iter = 0;
+
+        dgam = 0.0;
+        dgamp = 0.0;
+
+        ScalarT X = 0.0;
+        ScalarT R = f;
+        ScalarT dRdX = -2.0*mubar*(1.0+H/(2.0*mubar));
+
+        while (! converged) {
+          iter++;
+          X = X - R/dRdX;
+          H = 2.0*mubar*dt*B*
+            std::pow((smag+(2.0/3.0)*K*X-f)*(smag+(2.0/3.0)*K*X-f), C2/2.0);
+          dH = (4.0/3.0)*C2*mubar*dt*B*K*
+            std::pow((smag+(2.0/3.0)*K*X-f)*(smag+(2.0/3.0)*K*X-f), (C2-1.0)/2.0);
+          R = f - 2.0*mubar*(1.0+K/(3.0*mubar))*X - H;
+          dRdX = -2.0*mubar*(1.0+K/(3.0*mubar)) - dH;
+          res = std::abs(R);
+          if ((res < 1.0e-10) || (res/f) < 1.0e-11)
+            converged = true;
+          if (iter == 30)
+            fail("Creep: plastic increment failed to converge");
+        }
+
+        /* updates */
+        dgamp = X;
+        N = s / Intrepid2::norm(s);
+        s -= -2.0*mubar*dgamp*N + f*N - 2.0*mubar*(1.0+K/(3.0*mubar))*dgamp*N;
+        dgam = dgamp + dt*B*std::pow(Intrepid2::norm(s), C2);
+        alpha = eqps + sq23*dgamp;
+        N = s / Intrepid2::norm(s);
+        states->set_scalar("eqps", e, qp, alpha);
+
+        /* exponential map to get Fpnew */
+        A = dgam*N;
+        expA = Intrepid2::exp(A);
+        Fpn = expA*Fp;
+        states->set_tensor("Fp", e, qp, Fpn);
+
       }
 
       /* compute stress */

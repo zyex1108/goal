@@ -4,6 +4,7 @@
 #include "workset.hpp"
 #include "state_fields.hpp"
 #include "control.hpp"
+#include "expression.hpp"
 #include "assert_param.hpp"
 
 namespace goal {
@@ -15,15 +16,20 @@ static RCP<ParameterList> get_valid_params()
   p->set<double>("nu", 0.0);
   p->set<double>("K", 0.0);
   p->set<double>("Y", 0.0);
+  p->set<double>("alpha", 0.0);
   return p;
 }
 
-static void validate_params(RCP<const ParameterList> p)
+static void validate_params(
+    RCP<const ParameterList> p,
+    RCP<const ParameterList> tp)
 {
   assert_param(p, "E");
   assert_param(p, "nu");
   assert_param(p, "K");
   assert_param(p, "Y");
+  if (tp != Teuchos::null)
+    assert_param(p, "alpha");
   p->validateParameters(*get_valid_params(), 0);
 }
 
@@ -31,15 +37,20 @@ PHX_EVALUATOR_CTOR(ModelJ2, p) :
   dl            (p.get<RCP<Layouts> >("Layouts")),
   states        (p.get<RCP<StateFields> >("State Fields")),
   params        (p.get<RCP<const ParameterList> >("Material Params")),
+  temp_params   (p.get<RCP<const ParameterList> >("Temperature Params")),
   def_grad      (p.get<std::string>("Def Grad Name"), dl->qp_tensor),
   det_def_grad  (p.get<std::string>("Det Def Grad Name"), dl->qp_scalar),
   stress        (p.get<std::string>("Cauchy Name"), dl->qp_tensor)
 {
-  validate_params(params);
+  validate_params(params, temp_params);
+
   E = params->get<double>("E");
   nu = params->get<double>("nu");
   K = params->get<double>("K");
   Y = params->get<double>("Y");
+
+  have_temp = (Teuchos::nonnull(temp_params));
+  if (have_temp) alpha = params->get<double>("alpha");
 
   num_nodes = dl->node_qp_vector->dimension(1);
   num_qps = dl->node_qp_vector->dimension(2);
@@ -169,6 +180,21 @@ PHX_EVALUATE_FIELDS(ModelJ2, workset)
         stress(elem, qp, i, j) = sigma(i, j);
     }
   }
+
+  if (have_temp) {
+    double three_kappa = E/(1.0-2.0*nu);
+    std::string val = temp_params->get<std::string>("value");
+    double T = expression_eval(val,0,0,0,workset.t_new);
+    double T_ref = temp_params->get<double>("reference");
+    for (unsigned elem=0; elem < workset.size; ++elem) {
+      for (unsigned qp=0; qp < num_qps; ++qp) {
+        J = det_def_grad(elem,qp);
+        for (unsigned i=0; i < num_dims; ++i)
+          stress(elem,qp,i,i) -= three_kappa*alpha*(T-T_ref)*(1.0+1.0/(J*J));
+      }
+    }
+  }
+
 }
 
 GOAL_INSTANTIATE_ALL(ModelJ2)

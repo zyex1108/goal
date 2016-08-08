@@ -9,7 +9,7 @@ using Teuchos::RCP;
 using Teuchos::ParameterList;
 
 struct Layouts;
-struct StateFields;
+class StateFields;
 
 PHX_EVALUATOR_CLASS(ModelCreep)
 

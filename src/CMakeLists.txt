@@ -34,6 +34,7 @@ ev_scatter_residual.hpp
 ev_qoi_avg_displacement.hpp
 ev_scatter_qoi.hpp
 ev_bc_dirichlet.hpp
+ev_bc_traction.hpp
 solver.hpp
 solver_continuation.hpp
 solver_goal_continuation.hpp
@@ -72,6 +73,7 @@ ev_scatter_residual.cpp
 ev_qoi_avg_displacement.cpp
 ev_scatter_qoi.cpp
 ev_bc_dirichlet.cpp
+ev_bc_traction.cpp
 solver.cpp
 solver_continuation.cpp
 solver_goal_continuation.cpp

@@ -12,5 +12,3 @@ node set zmin 1
 2 9
 node set zmax 1
 2 10
-facet set xmax 1
-2 26

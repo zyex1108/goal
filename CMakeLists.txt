@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Goal CXX)
 
 set(GOAL_MAJOR "0")
-set(GOAL_MINOR "11")
+set(GOAL_MINOR "12")
 set(GOAL_PATCH "0")
 
 set(SCOREC_PREFIX "" CACHE STRING "Scorec installation directory")
@@ -102,34 +102,6 @@ add_subdirectory(src)
 
 if(GOAL_TESTING)
   include(CTest)
-  find_package(Gmodel 1.0.1 REQUIRED
-    PATHS ${Gmodel_PREFIX} NO_DEFAULT_PATH)
-  find_program(GMSH gmsh REQUIRED
-    PATHS ${Gmsh_PREFIX} NO_DEFAULT_PATH)
-  if(NOT GMSH)
-    message(FATAL_ERROR "gmsh executable not found!")
-  endif()
-  find_program(FROMGMSH from_gmsh REQUIRED
-    PATHS ${SCOREC_PREFIX}/bin NO_DEFAULT_PATH)
-  if(NOT FROMGMSH)
-    message(FATAL_ERROR "from_gmsh executable not found!")
-  endif()
-  find_program(SPLIT split REQUIRED
-    PATHS ${SCOREC_PREFIX}/bin NO_DEFAULT_PATH)
-  if(NOT SPLIT)
-    message(FATAL_ERROR "split executable not found!")
-  endif()
-  if(GOAL_VALGRIND)
-    find_program(VALGRIND valgrind REQUIRED
-      PATHS ${Valgrind_PREFIX} NO_DEFAULT_PATH)
-    if(NOT VALGRIND)
-      message(FATAL_ERROR "valgrind executable not found!")
-    endif()
-  endif()
-  message(STATUS "found Gmodel: ${Gmodel_DIR} (${Gmodel_VERSION})")
-  message(STATUS "found Gmsh: ${GMSH}")
-  message(STATUS "found SCOREC gmsh converter: ${FROMGMSH}")
-  message(STATUS "found SCOREC split utility: ${SPLIT}")
   if(GOAL_VALGRIND)
     message(STATUS "found Valgrind: ${VALGRIND}")
   endif()

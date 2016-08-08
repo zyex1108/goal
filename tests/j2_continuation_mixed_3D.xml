@@ -4,7 +4,7 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="0.978063516160394"/>
+  <Parameter name="regression: val" type="double" value="0.978049883399169"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
