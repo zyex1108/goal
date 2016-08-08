@@ -13,6 +13,7 @@ traits.hpp
 workset.hpp
 mesh.hpp
 solution_info.hpp
+solution_attachment.hpp
 state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
@@ -49,6 +50,7 @@ layouts.cpp
 workset.cpp
 mesh.cpp
 solution_info.cpp
+solution_attachment.cpp
 state_fields.cpp
 mechanics.cpp
 mechanics_volumetric.cpp
