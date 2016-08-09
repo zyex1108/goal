@@ -57,7 +57,7 @@ if("${isSystemDir}" STREQUAL "-1")
 endif("${isSystemDir}" STREQUAL "-1")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH True)
 
-find_package(SCOREC 1.0.1 REQUIRED PATHS ${SCOREC_PREFIX})
+find_package(SCOREC 2.0.0 REQUIRED PATHS ${SCOREC_PREFIX})
 find_package(Trilinos 12.0.0 REQUIRED PATHS ${Trilinos_PREFIX})
 
 list(REMOVE_DUPLICATES Trilinos_INCLUDE_DIRS)
