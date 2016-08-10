@@ -69,6 +69,56 @@ void attach_dual_solutions_to_mesh(AttachInfo& ai)
   attach_vector_to_mesh(z, ai.mesh, ai.mech, dual_names, offset_names);
 }
 
+static void attach_vector_to_shape(
+    RCP<const Vector> u,
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    Teuchos::Array<std::string> const& names,
+    Teuchos::Array<std::string> const& offset_names)
+{
+  ArrayRCP<const ST> data = u->get1dView();
+  apf::Mesh* m = mesh->get_apf_mesh();
+  apf::FieldShape* shape = mesh->get_apf_shape();
+  apf::DynamicArray<apf::Node> nodes = mesh->get_apf_nodes();
+  std::vector<apf::Field*> fields;
+  for (unsigned j=0; j < mesh->get_num_eqs(); ++j) {
+    apf::Field* f = apf::createField(m, names[j].c_str(), apf::SCALAR, shape);
+    fields.push_back(f);
+  }
+  for (unsigned i=0; i < nodes.size(); ++i) {
+    apf::Node* node = &(nodes[i]);
+    if (! m->isOwned(node->entity)) continue;
+    for (unsigned j=0; j < names.size(); ++j) {
+      unsigned eq = mech->get_offset(offset_names[j]);
+      LO row = mesh->get_lid(node, eq);
+      double v = data[row];
+      apf::setScalar(fields[j], node->entity, node->node, v);
+    }
+  }
+  for (unsigned j=0; j < names.size(); ++j)
+    apf::synchronize(fields[j]);
+}
+
+void attach_solutions_to_shape(AttachInfo& ai)
+{
+  RCP<MultiVector> sv = ai.sol_info->owned_solution;
+  unsigned nv = sv->getNumVectors();
+  for (unsigned i=0; i < nv; ++i) {
+    RCP<const Vector> u = sv->getVector(i);
+    Teuchos::Array<std::string> names= ai.mech->get_var_names(i);
+    attach_vector_to_shape(u, ai.mesh, ai.mech, names, names);
+  }
+}
+
+void attach_dual_solutions_to_shape(AttachInfo& ai)
+{
+  if (ai.sol_info->owned_dual == Teuchos::null) return;
+  RCP<Vector> z = ai.sol_info->owned_dual;
+  Teuchos::Array<std::string> offset_names = ai.mech->get_dof_names();
+  Teuchos::Array<std::string> dual_names = get_dual_names(ai.mech);
+  attach_vector_to_shape(z, ai.mesh, ai.mech, dual_names, offset_names);
+}
+
 void remove_solutions_from_mesh(AttachInfo& ai)
 {
   apf::Mesh* m = ai.mesh->get_apf_mesh();
