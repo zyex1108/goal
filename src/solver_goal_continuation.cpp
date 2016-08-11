@@ -33,6 +33,7 @@ static void validate_params(RCP<const ParameterList> p)
   assert_sublist(p, "mesh");
   assert_sublist(p, "mechanics");
   assert_sublist(p, "output");
+  assert_sublist(rcpFromRef(p->sublist("mechanics")), "qoi");
   p->validateParameters(*get_valid_params(), 0);
 }
 
