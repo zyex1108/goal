@@ -21,12 +21,6 @@ struct AttachInfo
 void attach_solutions_to_mesh(AttachInfo& i);
 void attach_dual_solutions_to_mesh(AttachInfo& i);
 
-void attach_solutions_to_shape(AttachInfo& i);
-void attach_dual_solutions_to_shape(AttachInfo& i);
-
-void fill_solution_vectors(AttachInfo& i);
-void fill_dual_solution_vectors(AttachInfo& i);
-
 void remove_solutions_from_mesh(AttachInfo& i);
 void remove_dual_solutions_from_mesh(AttachInfo& i);
 
