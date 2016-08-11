@@ -168,6 +168,33 @@ void StateFields::get_tensor(
     v(i,j) = (T)val[i][j];
 }
 
+static apf::Field* swap_field(
+    apf::Field* f,
+    apf::FieldShape* s)
+{
+  apf::Mesh* m = apf::getMesh(f);
+  std::string name = (std::string)(apf::getName(f));
+  int vt = apf::getValueType(f);
+  apf::Field* nf = apf::createField(m, "tmp", vt, s);
+  apf::zeroField(nf);
+  apf::projectField(nf, f);
+  apf::destroyField(f);
+  apf::renameField(nf, name.c_str());
+  return nf;
+}
+
+void StateFields::project()
+{
+  double t0 = time();
+  unsigned dim = mesh->get_num_dims();
+  unsigned q_order = mesh->get_q_order();
+  apf::FieldShape* s = apf::getIPFitShape(dim, q_order);
+  for (unsigned i=0; i < states.size(); ++i)
+    states[i] = swap_field(states[i], s);
+  double t1 = time();
+  print("state fields projected in %f seconds", t1-t0);
+}
+
 void StateFields::update()
 {
   for (unsigned i=0; i < old_states.size(); ++i) {
