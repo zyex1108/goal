@@ -15,6 +15,7 @@ class SolutionInfo
 {
   public:
     void resize(RCP<Mesh> m, bool enable_dynamics);
+    void project(RCP<Mesh> m, bool enable_dynamics);
     void create_dual_vectors(RCP<Mesh> m);
     void destroy_dual_vectors();
     void gather_solution();
