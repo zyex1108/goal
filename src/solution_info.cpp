@@ -76,6 +76,24 @@ void SolutionInfo::gather_jacobian()
   owned_jacobian->doExport(*ovlp_jacobian, *exporter, Tpetra::ADD);
 }
 
+void SolutionInfo::project()
+{
+  double t0 = time();
+  RCP<Vector> old_solution(owned_solution);
+  resize();
+  owned_solution->putScalar(0.0);
+  ArrayRCP<const ST> os = old_solution->get1dView();
+  ArrayRCP<ST> s = owned_solution->get1dViewNonConst();
+  unsigned length = std::min(
+      old_solution->getLocalLength(), owned_solution->getLocalLength());
+  for (unsigned i=0; i < length; ++i)
+    s[i] = os[i];
+  scatter_solution();
+  old_solution = Teuchos::null;
+  double t1 = time();
+  print("solution projected in %f seconds", t1-t0);
+}
+
 RCP<SolutionInfo> sol_info_create(RCP<Mesh> m, bool enable_dynamics)
 {
   RCP<SolutionInfo> s = rcp(new SolutionInfo);
