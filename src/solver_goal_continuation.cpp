@@ -30,9 +30,9 @@ static void validate_params(RCP<const ParameterList> p)
   assert_param(p, "initial time");
   assert_param(p, "step size");
   assert_param(p, "num steps");
-  assert_param(p, "mesh");
-  assert_param(p, "mechanics");
-  assert_param(p, "output");
+  assert_sublist(p, "mesh");
+  assert_sublist(p, "mechanics");
+  assert_sublist(p, "output");
   p->validateParameters(*get_valid_params(), 0);
 }
 
