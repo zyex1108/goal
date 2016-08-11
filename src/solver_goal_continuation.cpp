@@ -62,22 +62,37 @@ SolverGoalContinuation::SolverGoalContinuation(
   t_new = t_old + dt;
 }
 
+static void change_p_globally(
+    int add,
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    RCP<SolutionInfo> sol_info)
+{
+  mesh->change_p(add);
+  mesh->update();
+  mech->project_state();
+  sol_info->project(mesh, false);
+}
+
 void SolverGoalContinuation::solve()
 {
   sol_info->ovlp_solution->putScalar(0.0);
-
-  mechanics->build_primal();
-  primal->set_time(t_new, t_old);
-  primal->solve();
-
-  mechanics->build_dual();
-  sol_info->create_dual_vectors(mesh);
-  dual->set_time(t_new, t_old);
-  dual->solve();
-
-  output->write(0.0);
-
-  sol_info->destroy_dual_vectors();
+  for (unsigned step=1; step <= num_steps; ++step) {
+    mechanics->build_primal();
+    primal->set_time(t_new, t_old);
+    primal->solve();
+    print("");
+    change_p_globally(+1, mesh, mechanics, sol_info);
+    print("");
+    mechanics->build_dual();
+    sol_info->create_dual_vectors(mesh);
+    dual->set_time(t_new, t_old);
+    dual->solve();
+    print("");
+    output->write(t_new);
+    sol_info->destroy_dual_vectors();
+    change_p_globally(-1, mesh, mechanics, sol_info);
+  }
 }
 
 }
