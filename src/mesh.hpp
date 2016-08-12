@@ -75,6 +75,7 @@ class Mesh
 
     double get_mesh_size(apf::MeshEntity* e);
 
+    void change_p(int add);
     void update();
 
   private:

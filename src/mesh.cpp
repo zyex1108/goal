@@ -398,6 +398,15 @@ void Mesh::compute_node_sets()
   }
 }
 
+void Mesh::change_p(int add)
+{
+  CHECK((add==1)||(add==-1));
+  p_order += add;
+  q_order += add;
+  ALWAYS_CHECK((p_order==1) || (p_order==2));
+  shape = apf::getHierarchic(p_order);
+}
+
 void Mesh::update()
 {
   double t0 = time();

@@ -110,6 +110,7 @@ void Mechanics::build_error()
 
 void Mechanics::project_state()
 {
+  state_fields->project();
 }
 
 void Mechanics::update_state()

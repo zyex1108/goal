@@ -30,9 +30,10 @@ static void validate_params(RCP<const ParameterList> p)
   assert_param(p, "initial time");
   assert_param(p, "step size");
   assert_param(p, "num steps");
-  assert_param(p, "mesh");
-  assert_param(p, "mechanics");
-  assert_param(p, "output");
+  assert_sublist(p, "mesh");
+  assert_sublist(p, "mechanics");
+  assert_sublist(p, "output");
+  assert_sublist(rcpFromRef(p->sublist("mechanics")), "qoi");
   p->validateParameters(*get_valid_params(), 0);
 }
 
@@ -61,22 +62,40 @@ SolverGoalContinuation::SolverGoalContinuation(
   t_new = t_old + dt;
 }
 
+static void change_p_globally(
+    int add,
+    RCP<Mesh> mesh,
+    RCP<Mechanics> mech,
+    RCP<SolutionInfo> sol_info)
+{
+  mesh->change_p(add);
+  mesh->update();
+  mech->project_state();
+  sol_info->project(mesh, false);
+}
+
 void SolverGoalContinuation::solve()
 {
   sol_info->ovlp_solution->putScalar(0.0);
-
-  mechanics->build_primal();
-  primal->set_time(t_new, t_old);
-  primal->solve();
-
-  mechanics->build_dual();
-  sol_info->create_dual_vectors(mesh);
-  dual->set_time(t_new, t_old);
-  dual->solve();
-
-  output->write(0.0);
-
-  sol_info->destroy_dual_vectors();
+  for (unsigned step=1; step <= num_steps; ++step) {
+    print("*** Continuation Step: (%u)", step);
+    print("*** from time:         %f", t_old);
+    print("*** to time:           %f", t_new);
+    print("** Primal problem");
+    mechanics->build_primal();
+    primal->set_time(t_new, t_old);
+    primal->solve();
+    print("** Dual problem");
+    change_p_globally(+1, mesh, mechanics, sol_info);
+    mechanics->build_dual();
+    sol_info->create_dual_vectors(mesh);
+    dual->set_time(t_new, t_old);
+    dual->solve();
+    print("** Output");
+    output->write(t_new);
+    sol_info->destroy_dual_vectors();
+    change_p_globally(-1, mesh, mechanics, sol_info);
+  }
 }
 
 }

@@ -69,6 +69,8 @@ class StateFields
         unsigned qp,
         Intrepid2::Tensor<T>& v);
 
+    void project();
+
     void update();
 
   private:

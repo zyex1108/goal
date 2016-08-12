@@ -14,6 +14,7 @@ using Teuchos::RCP;
 using Teuchos::ParameterList;
 
 void assert_param(RCP<const ParameterList> p, std::string const& v);
+void assert_sublist(RCP<const ParameterList> p, std::string const& v);
 
 }
 

@@ -217,7 +217,7 @@ void goal::Mechanics::register_volumetric(
   if (is_dual) {
 
     /* get the quantity of interest parameters */
-    assert_param(params, "qoi");
+    assert_sublist(params, "qoi");
     RCP<const ParameterList> qoi_params = rcpFromRef(params->sublist("qoi"));
     std::string qoi_name = qoi_params->get<std::string>("name");
 

@@ -13,6 +13,7 @@ traits.hpp
 workset.hpp
 mesh.hpp
 solution_info.hpp
+solution_attachment.hpp
 state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
@@ -49,6 +50,7 @@ layouts.cpp
 workset.cpp
 mesh.cpp
 solution_info.cpp
+solution_attachment.cpp
 state_fields.cpp
 mechanics.cpp
 mechanics_volumetric.cpp
@@ -84,7 +86,7 @@ target_compile_definitions(goalie PUBLIC "-DGOAL_FAD_SIZE=${GOAL_FAD_SIZE}")
 target_include_directories(goalie PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 target_include_directories(goalie PUBLIC ${Trilinos_INCLUDE_DIRS})
 target_include_directories(goalie PUBLIC ${Trilinos_TPL_INCLUDE_DIRS})
-target_link_libraries(goalie PUBLIC scorec)
+target_link_libraries(goalie PUBLIC SCOREC::core)
 target_link_libraries(goalie PUBLIC ${Trilinos_LIBRARIES})
 target_link_libraries(goalie PUBLIC ${Trilinos_TPL_LIBRARIES})
 target_link_libraries(goalie PUBLIC ${Trilinos_EXTRA_LD_FLAGS})
