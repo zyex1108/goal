@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(Goal CXX)
+project(Goal LANGUAGES CXX)
 
 set(GOAL_MAJOR "0")
 set(GOAL_MINOR "12")
