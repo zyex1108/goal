@@ -78,17 +78,20 @@ void SolverGoalContinuation::solve()
 {
   sol_info->ovlp_solution->putScalar(0.0);
   for (unsigned step=1; step <= num_steps; ++step) {
+    print("*** Continuation Step: (%u)", step);
+    print("*** from time:         %f", t_old);
+    print("*** to time:           %f", t_new);
+    print("** Primal problem");
     mechanics->build_primal();
     primal->set_time(t_new, t_old);
     primal->solve();
-    print("");
+    print("** Dual problem");
     change_p_globally(+1, mesh, mechanics, sol_info);
-    print("");
     mechanics->build_dual();
     sol_info->create_dual_vectors(mesh);
     dual->set_time(t_new, t_old);
     dual->solve();
-    print("");
+    print("** Output");
     output->write(t_new);
     sol_info->destroy_dual_vectors();
     change_p_globally(-1, mesh, mechanics, sol_info);
