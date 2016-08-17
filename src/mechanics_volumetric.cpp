@@ -82,7 +82,7 @@ void goal::Mechanics::register_volumetric(
   /* gather and interpolate the solution vector */
   register_solutions<EvalT>(dl, mesh, var_names[0], 0, ev, fm);
 
-  if (supports_dynamics) {
+  if (enable_dynamics) {
     /* gather and interpolate the time derivative of the solution */
     register_solutions<EvalT>(dl, mesh, var_names[1], 1, ev, fm);
 
