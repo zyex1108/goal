@@ -39,6 +39,7 @@ ev_bc_traction.hpp
 solver.hpp
 solver_continuation.hpp
 solver_goal_continuation.hpp
+solver_trapezoid.hpp
 )
 
 set(SOURCES
@@ -79,6 +80,7 @@ ev_bc_traction.cpp
 solver.cpp
 solver_continuation.cpp
 solver_goal_continuation.cpp
+solver_trapezoid.cpp
 )
 
 add_library(goalie ${SOURCES})
