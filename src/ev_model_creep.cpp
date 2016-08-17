@@ -18,6 +18,8 @@ static RCP<ParameterList> get_valid_params()
   p->set<double>("A", 0.0);
   p->set<double>("QR", 0.0);
   p->set<double>("C2", 0.0);
+  p->set<double>("alpha", 0.0);
+  p->set<double>("rho", 0.0);
   return p;
 }
 

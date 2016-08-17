@@ -15,6 +15,7 @@ static RCP<ParameterList> get_valid_params()
   p->set<double>("E", 0.0);
   p->set<double>("nu", 0.0);
   p->set<double>("alpha", 0.0);
+  p->set<double>("rho", 0.0);
   return p;
 }
 
