@@ -1,6 +1,7 @@
 #include "solver.hpp"
 #include "solver_continuation.hpp"
 #include "solver_goal_continuation.hpp"
+#include "solver_trapezoid.hpp"
 #include "assert_param.hpp"
 #include "control.hpp"
 
@@ -21,6 +22,8 @@ RCP<Solver> solver_create(RCP<const ParameterList> p)
     solver = rcp(new SolverContinuation(p));
   else if (type == "goal-oriented continuation")
     solver = rcp(new SolverGoalContinuation(p));
+  else if (type == "trapezoid")
+    solver = rcp(new SolverTrapezoid(p));
   else
     fail("unknown solver type: %s", type.c_str());
   return solver;
