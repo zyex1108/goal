@@ -26,6 +26,15 @@ void get_field(
 }
 
 template <typename ScalarT>
+void get_field(
+    std::string const& name,
+    RCP<Layouts> dl,
+    PHX::MDField<ScalarT,Elem,Node,QP>& f)
+{
+  f = PHX::MDField<ScalarT,Elem,Node,QP>(name,dl->node_qp_scalar);
+}
+
+template <typename ScalarT>
 void get_grad_field(
     PHX::MDField<ScalarT, Elem, Node, QP> f,
     RCP<Layouts> dl,
