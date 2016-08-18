@@ -13,6 +13,7 @@ traits.hpp
 workset.hpp
 mesh.hpp
 solution_info.hpp
+initial_condition.hpp
 solution_attachment.hpp
 state_fields.hpp
 mechanics.hpp
@@ -51,6 +52,7 @@ layouts.cpp
 workset.cpp
 mesh.cpp
 solution_info.cpp
+initial_condition.cpp
 solution_attachment.cpp
 state_fields.cpp
 mechanics.cpp
