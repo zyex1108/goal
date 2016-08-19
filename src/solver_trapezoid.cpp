@@ -2,6 +2,7 @@
 #include "mesh.hpp"
 #include "mechanics.hpp"
 #include "solution_info.hpp"
+#include "initial_condition.hpp"
 #include "primal_problem.hpp"
 #include "output.hpp"
 #include "assert_param.hpp"
@@ -14,10 +15,13 @@ namespace goal {
 static RCP<ParameterList> get_valid_params()
 {
   RCP<ParameterList> p = rcp(new ParameterList);
+  Teuchos::Array<std::string> dummy(0);
   p->set<std::string>("solver type", "");
   p->set<double>("initial time", 0.0);
   p->set<double>("step size", 0.0);
   p->set<unsigned>("num steps", 0);
+  p->set<Teuchos::Array<std::string> >("ic", dummy);
+  p->set<Teuchos::Array<std::string> >("ic dot", dummy);
   p->sublist("mesh");
   p->sublist("mechanics");
   p->sublist("linear algebra");
@@ -52,6 +56,7 @@ SolverTrapezoid::SolverTrapezoid(RCP<const ParameterList> p) :
   sol_info = sol_info_create(mesh, enable_dynamics);
   primal = primal_create(params, mesh, mechanics, sol_info);
   output = output_create(params, mesh, mechanics, sol_info);
+  set_initial_conditions(params, mesh, mechanics, sol_info);
   t_old = params->get<double>("initial time");
   dt = params->get<double>("step size");
   num_steps = params->get<unsigned>("num steps");
@@ -62,8 +67,28 @@ void SolverTrapezoid::solve()
 {
   mechanics->build_primal();
   sol_info->ovlp_solution->putScalar(0.0);
-  primal->set_coeffs(0.0, 0.0, 1.0);
-  primal->solve();
+
+  output->write(t_new);
+
+  for (unsigned step=1; step <= num_steps; ++step) {
+
+
+    print("*** Time Step: (%u)", step);
+    print("*** from time: %f", t_old);
+    print("*** to time:   %f", t_new);
+
+    double alpha = 4.0/(dt*dt);
+    double beta = 2.0/dt;
+    double gamma = 1.0;
+
+    primal->set_coeffs(alpha, beta, gamma);
+    primal->set_time(t_new, t_old);
+    primal->solve();
+
+    t_old = t_new;
+    t_new = t_new + dt;
+    mechanics->update_state();
+  }
 }
 
 }
