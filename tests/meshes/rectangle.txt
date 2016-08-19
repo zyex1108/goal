@@ -1,0 +1,12 @@
+element set rectangle 1
+2 9
+node set bottom 1
+1 2
+node set left 1
+1 4
+node set right 1
+1 6
+node set top 1 
+1 8
+facet set right 1
+1 6

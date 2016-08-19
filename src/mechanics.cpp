@@ -22,32 +22,39 @@ static RCP<ParameterList> get_valid_params(RCP<Mesh> m)
   return p;
 }
 
-static void validate_params(RCP<const ParameterList> p, RCP<Mesh> m)
+void Mechanics::validate_params()
 {
-  assert_param(p, "model");
-  assert_param(p, "dirichlet bcs");
-  for (unsigned i=0; i < m->get_num_elem_sets(); ++i)
-    assert_param(p, m->get_elem_set_name(i));
-  if (p->isSublist("temperature")) {
-    RCP<const ParameterList> tp = rcpFromRef(p->sublist("temperature"));
-    assert_param(tp, "value");
-    assert_param(tp, "reference");
+  assert_param(params, "model");
+  assert_param(params, "dirichlet bcs");
+  for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
+    std::string const& set_name = mesh->get_elem_set_name(i);
+    assert_sublist(params, set_name);
+    RCP<const ParameterList> set_params;
+    set_params = rcpFromRef(params->sublist(set_name));
+    if (have_temperature) assert_param(set_params, "alpha");
+    if (enable_dynamics) assert_param(set_params, "rho");
   }
-  p->validateParameters(*get_valid_params(m), 0);
+  if (have_temperature) {
+    RCP<const ParameterList> temp_params;
+    temp_params = rcpFromRef(params->sublist("temperature"));
+    assert_param(temp_params, "value");
+    assert_param(temp_params, "reference");
+  }
+  params->validateParameters(*get_valid_params(mesh), 0);
 }
 
 Mechanics::Mechanics(
     RCP<const ParameterList> p,
     RCP<Mesh> m,
-    bool support) :
+    bool enable) :
   params(p),
   mesh(m),
-  supports_dynamics(support),
+  enable_dynamics(enable),
   have_pressure_eq(false),
   have_temperature(false),
   small_strain(false)
 {
-  validate_params(params, mesh);
+  validate_params();
   setup_params();
   setup_variables();
   setup_fields();
@@ -125,7 +132,7 @@ Teuchos::Array<std::string> const& Mechanics::get_dof_names()
 
 Teuchos::Array<std::string> const& Mechanics::get_var_names(unsigned i)
 {
-  if (i > 0) CHECK(supports_dynamics);
+  if (i > 0) CHECK(enable_dynamics);
   CHECK((i>=0) && (i<=2));
   return var_names[i];
 }
@@ -173,7 +180,7 @@ void Mechanics::setup_variables()
   var_names[0].push_back("ux");
   if (d > 1) var_names[0].push_back("uy");
   if (d > 2) var_names[0].push_back("uz");
-  if (supports_dynamics) {
+  if (enable_dynamics) {
     var_names[1].push_back("vx");
     if (d > 1) var_names[1].push_back("vy");
     if (d > 2) var_names[1].push_back("vz");
@@ -184,13 +191,13 @@ void Mechanics::setup_variables()
 
   if (have_pressure_eq) {
     var_names[0].push_back("p");
-    if (supports_dynamics) {
+    if (enable_dynamics) {
       var_names[1].push_back("dp");
       var_names[2].push_back("ddp");
     }
   }
 
-  if (supports_dynamics) {
+  if (enable_dynamics) {
     CHECK(var_names[0].size() == var_names[1].size());
     CHECK(var_names[1].size() == var_names[2].size());
   }
@@ -215,7 +222,7 @@ void Mechanics::setup_fields()
   if (d > 2) disp.push_back("uz");
   fields["disp"] = disp;
 
-  if (supports_dynamics) {
+  if (enable_dynamics) {
     Teuchos::Array<std::string> vel;
     vel.push_back("vx");
     if (d > 1) vel.push_back("vy");
@@ -258,10 +265,10 @@ void Mechanics::setup_states()
 RCP<Mechanics> mechanics_create(
     RCP<const ParameterList> p,
     RCP<Mesh> m,
-    bool supports_dynamics)
+    bool enable_dynamics)
 {
   RCP<const ParameterList> mp = rcpFromRef(p->sublist("mechanics"));
-  return rcp(new Mechanics(mp, m, supports_dynamics));
+  return rcp(new Mechanics(mp, m, enable_dynamics));
 }
 
 }

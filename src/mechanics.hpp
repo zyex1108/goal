@@ -24,7 +24,7 @@ class Mechanics
     Mechanics(
         RCP<const ParameterList> p,
         RCP<Mesh> m,
-        bool supports_dynamics);
+        bool enable_dynamics);
 
     unsigned get_num_eqs();
     
@@ -48,7 +48,7 @@ class Mechanics
     RCP<const ParameterList> params;
     RCP<Mesh> mesh;
 
-    bool supports_dynamics;
+    bool enable_dynamics;
     bool have_pressure_eq;
     bool have_temperature;
     bool small_strain;
@@ -69,6 +69,8 @@ class Mechanics
     FieldManagers vfms;
     FieldManager nfm;
     FieldManager dfm;
+
+    void validate_params();
 
     void set_primal();
     void set_dual();
@@ -93,7 +95,7 @@ class Mechanics
 RCP<Mechanics> mechanics_create(
     RCP<const ParameterList> p,
     RCP<Mesh> m,
-    bool supports_dynamics);
+    bool enable_dynamics);
 
 }
 

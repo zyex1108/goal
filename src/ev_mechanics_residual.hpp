@@ -18,13 +18,18 @@ PHX_EVALUATOR_CLASS(MechanicsResidual)
     std::string bf_name;
     Teuchos::Array<std::string> disp_names;
 
+    bool enable_dynamics;
+    double rho;
+
     unsigned num_nodes;
     unsigned num_qps;
     unsigned num_dims;
 
     PHX::MDField<double, Elem, QP> wDv;
+    PHX::MDField<double, Elem, Node, QP> BF;
     PHX::MDField<double, Elem, Node, QP, Dim> gBF;
     PHX::MDField<ScalarT, Elem, QP, Dim, Dim> stress;
+    std::vector<PHX::MDField<ScalarT, Elem, QP> > acc;
     std::vector<PHX::MDField<ScalarT, Elem, Node> > resid;
 
 PHX_EVALUATOR_CLASS_END
