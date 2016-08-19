@@ -66,29 +66,55 @@ SolverTrapezoid::SolverTrapezoid(RCP<const ParameterList> p) :
 void SolverTrapezoid::solve()
 {
   mechanics->build_primal();
-  sol_info->ovlp_solution->putScalar(0.0);
 
-  output->write(t_new);
+  /* create the predictor vectors */
+  RCP<const Map> map = mesh->get_owned_map();
+  x_pred = rcp(new Vector(map));
+  v_pred = rcp(new Vector(map));
 
+  /* time loop */
   for (unsigned step=1; step <= num_steps; ++step) {
-
 
     print("*** Time Step: (%u)", step);
     print("*** from time: %f", t_old);
     print("*** to time:   %f", t_new);
 
+    /* compute fad coefficients */
     double alpha = 4.0/(dt*dt);
     double beta = 2.0/dt;
     double gamma = 1.0;
 
+    /* get the solution vectors */
+    RCP<Vector> x = sol_info->owned_solution->getVectorNonConst(0);
+    RCP<Vector> v = sol_info->owned_solution->getVectorNonConst(1);
+    RCP<Vector> a = sol_info->owned_solution->getVectorNonConst(2);
+
+    /* predictor phase */
+    x_pred->assign(*x);
+    x_pred->update(dt, *v, alpha, *a, 1.0);
+    v_pred->assign(*v);
+    v_pred->update(beta, *v, 1.0);
+    a->assign(*v_pred);
+
+    /* solve the primal model */
     primal->set_coeffs(alpha, beta, gamma);
     primal->set_time(t_new, t_old);
     primal->solve();
 
+    /* corrector phase */
+    a->update(alpha, *x, -alpha, *x_pred, 0.0);
+    v->update(beta, *x, -beta, *v_pred, 0.0);
+
+    /* write output */
+    output->write(t_new);
+
+    /* updates */
     t_old = t_new;
     t_new = t_new + dt;
     mechanics->update_state();
+
   }
+
 }
 
 }
