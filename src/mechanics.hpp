@@ -86,6 +86,16 @@ class Mechanics
     void register_volumetric(std::string const& set, FieldManager fm);
 
     template <typename EvalT>
+    void register_model(
+        std::string const& set,
+        RCP<const ParameterList> material_params,
+        RCP<const ParameterList> temperature_params,
+        FieldManager fm);
+
+    template <typename EvalT>
+    void register_qoi(std::string const& set, FieldManager fm);
+
+    template <typename EvalT>
     void register_neumann(FieldManager fm);
 
     template <typename EvalT>

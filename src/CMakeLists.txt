@@ -56,6 +56,8 @@ initial_condition.cpp
 solution_attachment.cpp
 state_fields.cpp
 mechanics.cpp
+mechanics_model.cpp
+mechanics_qoi.cpp
 mechanics_volumetric.cpp
 mechanics_neumann.cpp
 mechanics_dirichlet.cpp
