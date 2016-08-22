@@ -165,6 +165,7 @@ void goal::Mechanics::register_volumetric(
   { /* mechanics residual */
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<RCP<Mesh> >("Mesh", mesh);
     p->set<std::string>("BF Name", "BF");
     p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
     p->set<std::string>("Weighted Dv Name", "wDv");
@@ -173,6 +174,13 @@ void goal::Mechanics::register_volumetric(
     if (enable_dynamics) {
       p->set<double>("Density", mp->get<double>("rho"));
       p->set<Teuchos::Array<std::string> >("Acc Names", fields["acc"]);
+    }
+    p->set<bool>("Have Body Force", have_body_force);
+    if (have_body_force) {
+      Teuchos::Array<std::string> body_force;
+      body_force = params->get<Teuchos::Array<std::string> >("body force");
+      p->set<Teuchos::Array<std::string> >("Body Force", body_force);
+      p->set<double>("Density", mp->get<double>("rho"));
     }
     ev = rcp(new MechanicsResidual<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
