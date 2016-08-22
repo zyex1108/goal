@@ -20,6 +20,7 @@ mechanics.hpp
 primal_problem.hpp
 dual_problem.hpp
 linear_solver.hpp
+adapter.hpp
 output.hpp
 ev_basis_functions.hpp
 ev_gather_solution.hpp
@@ -64,6 +65,7 @@ mechanics_dirichlet.cpp
 primal_problem.cpp
 dual_problem.cpp
 linear_solver.cpp
+adapter.cpp
 output.cpp
 ev_basis_functions.cpp
 ev_gather_solution.cpp
