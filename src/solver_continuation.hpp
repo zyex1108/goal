@@ -9,6 +9,7 @@ class Mesh;
 class Mechanics;
 class SolutionInfo;
 class PrimalProblem;
+class Adapter;
 class Output;
 
 class SolverContinuation : public Solver
@@ -22,6 +23,7 @@ class SolverContinuation : public Solver
     RCP<Mechanics> mechanics;
     RCP<SolutionInfo> sol_info;
     RCP<PrimalProblem> primal;
+    RCP<Adapter> adapter;
     RCP<Output> output;
     double t_old;
     double t_new;
