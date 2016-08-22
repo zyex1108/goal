@@ -9,11 +9,13 @@ namespace goal {
 static RCP<ParameterList> get_valid_params(RCP<Mesh> m)
 {
   RCP<ParameterList> p = rcp(new ParameterList);
+  Teuchos::Array<std::string> dummy(0);
   p->set<std::string>("model", "");
   p->set<bool>("mixed formulation", false);
   p->sublist("dirichlet bcs");
   p->sublist("neumann bcs");
   p->sublist("temperature");
+  p->set<Teuchos::Array<std::string> >("body force", dummy);
   for (unsigned i=0; i < m->get_num_elem_sets(); ++i) {
     std::string const& set  = m->get_elem_set_name(i);
     p->sublist(set);
@@ -33,12 +35,18 @@ void Mechanics::validate_params()
     set_params = rcpFromRef(params->sublist(set_name));
     if (have_temperature) assert_param(set_params, "alpha");
     if (enable_dynamics) assert_param(set_params, "rho");
+    if (have_body_force) assert_param(set_params, "rho");
   }
   if (have_temperature) {
     RCP<const ParameterList> temp_params;
     temp_params = rcpFromRef(params->sublist("temperature"));
     assert_param(temp_params, "value");
     assert_param(temp_params, "reference");
+  }
+  if (have_body_force) {
+    Teuchos::Array<std::string> bf;
+    bf = params->get<Teuchos::Array<std::string> >("body force");
+    CHECK(bf.size() == mesh->get_num_dims());
   }
   params->validateParameters(*get_valid_params(mesh), 0);
 }
@@ -52,10 +60,11 @@ Mechanics::Mechanics(
   enable_dynamics(enable),
   have_pressure_eq(false),
   have_temperature(false),
+  have_body_force(false),
   small_strain(false)
 {
-  validate_params();
   setup_params();
+  validate_params();
   setup_variables();
   setup_fields();
   setup_states();
@@ -171,6 +180,8 @@ void Mechanics::setup_params()
     have_pressure_eq = params->get<bool>("mixed formulation");
   if (params->isSublist("temperature"))
     have_temperature = true;
+  if (params->isParameter("body force"))
+    have_body_force = true;
 }
 
 void Mechanics::setup_variables()

@@ -51,6 +51,7 @@ class Mechanics
     bool enable_dynamics;
     bool have_pressure_eq;
     bool have_temperature;
+    bool have_body_force;
     bool small_strain;
 
     bool is_primal;
