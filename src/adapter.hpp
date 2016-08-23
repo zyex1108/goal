@@ -2,6 +2,7 @@
 #define goal_adapter_hpp
 
 #include <Teuchos_RCP.hpp>
+#include <Teuchos_Array.hpp>
 
 namespace Teuchos {
 class ParameterList;
@@ -37,6 +38,11 @@ class Adapter
     RCP<Mechanics> mechanics;
     RCP<SolutionInfo> sol_info;
 
+    unsigned max_iters;
+    Teuchos::Array<std::string> load_balance;
+
+    void pre_adapt();
+    void post_adapt();
 };
 
 RCP<Adapter> adapter_create(
