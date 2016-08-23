@@ -85,6 +85,8 @@ static void attach_vector_to_shape(
       apf::setScalar(fields[j], node->entity, node->node, v);
     }
   }
+  for (unsigned j=0; j < names.size(); ++j)
+    apf::synchronize(fields[j]);
 }
 
 void attach_solutions_to_shape(AttachInfo& ai)
