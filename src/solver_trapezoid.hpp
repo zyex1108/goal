@@ -24,8 +24,6 @@ class SolverTrapezoid : public Solver
     RCP<SolutionInfo> sol_info;
     RCP<PrimalProblem> primal;
     RCP<Output> output;
-    RCP<Vector> x_pred;
-    RCP<Vector> v_pred;
     double t_old;
     double t_new;
     double dt;
