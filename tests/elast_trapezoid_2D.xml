@@ -2,10 +2,10 @@
 
   <Parameter name="solver type" type="string" value="trapezoid"/>
   <Parameter name="initial time" type="double" value="0.0"/>
-  <Parameter name="step size" type="double" value="0.01"/>
-  <Parameter name="num steps" type="unsigned int" value="3"/>
+  <Parameter name="step size" type="double" value="0.1"/>
+  <Parameter name="num steps" type="unsigned int" value="5"/>
   <Parameter name="ic" type="Array(string)" value="{val=0.0,val=0.0}"/>
-  <Parameter name="ic dot" type="Array(string)" value="{val=0.0,val=x}"/>
+  <Parameter name="ic dot" type="Array(string)" value="{val=0.0,val=0.1*x}"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/rectangle.dmg"/>
