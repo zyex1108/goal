@@ -1,7 +1,8 @@
-#ifndef goal_primal_problem_hpp
-#define goal_primal_problem_hpp
+#ifndef goal_adapter_hpp
+#define goal_adapter_hpp
 
 #include <Teuchos_RCP.hpp>
+#include <Teuchos_Array.hpp>
 
 namespace Teuchos {
 class ParameterList;
@@ -17,25 +18,18 @@ class Mesh;
 class Mechanics;
 class SolutionInfo;
 
-class PrimalProblem
+class Adapter
 {
+
   public:
 
-    PrimalProblem(
+    Adapter(
         RCP<const ParameterList> p,
         RCP<Mesh> m,
         RCP<Mechanics> mech,
         RCP<SolutionInfo> s);
 
-    void set_time(double current, double previous);
-
-    void set_coeffs(double alpha, double beta, double gamma);
-
-    void compute_residual();
-
-    void compute_jacobian();
-
-    void solve();
+    void adapt(unsigned step_number);
 
   private:
 
@@ -44,19 +38,14 @@ class PrimalProblem
     RCP<Mechanics> mechanics;
     RCP<SolutionInfo> sol_info;
 
-    double t_new;
-    double t_old;
-
-    double alpha;
-    double beta;
-    double gamma;
-
-    double tolerance;
     unsigned max_iters;
+    Teuchos::Array<std::string> load_balance;
 
+    void pre_adapt();
+    void post_adapt();
 };
 
-RCP<PrimalProblem> primal_create(
+RCP<Adapter> adapter_create(
     RCP<const ParameterList> p,
     RCP<Mesh> m,
     RCP<Mechanics> mech,

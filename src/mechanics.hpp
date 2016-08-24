@@ -51,6 +51,7 @@ class Mechanics
     bool enable_dynamics;
     bool have_pressure_eq;
     bool have_temperature;
+    bool have_body_force;
     bool small_strain;
 
     bool is_primal;
@@ -83,6 +84,16 @@ class Mechanics
 
     template <typename EvalT>
     void register_volumetric(std::string const& set, FieldManager fm);
+
+    template <typename EvalT>
+    void register_model(
+        std::string const& set,
+        RCP<const ParameterList> material_params,
+        RCP<const ParameterList> temperature_params,
+        FieldManager fm);
+
+    template <typename EvalT>
+    void register_qoi(std::string const& set, FieldManager fm);
 
     template <typename EvalT>
     void register_neumann(FieldManager fm);

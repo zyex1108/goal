@@ -9,17 +9,23 @@ using Teuchos::RCP;
 using Teuchos::ParameterList;
 
 struct Layouts;
+class Mesh;
 
 PHX_EVALUATOR_CLASS(MechanicsResidual)
 
   private:
 
     RCP<Layouts> dl;
+    RCP<Mesh> mesh;
+
     std::string bf_name;
     Teuchos::Array<std::string> disp_names;
 
     bool enable_dynamics;
+    bool have_body_force;
+
     double rho;
+    Teuchos::Array<std::string> body_force;
 
     unsigned num_nodes;
     unsigned num_qps;

@@ -1,15 +1,15 @@
 <ParameterList>
 
-  <Parameter name="solver type" type="string" value="trapezoid"/>
+  <Parameter name="solver type" type="string" value="continuation"/>
   <Parameter name="initial time" type="double" value="0.0"/>
-  <Parameter name="step size" type="double" value="0.1"/>
-  <Parameter name="num steps" type="unsigned int" value="5"/>
-  <Parameter name="ic" type="Array(string)" value="{val=0.0,val=0.0}"/>
-  <Parameter name="ic dot" type="Array(string)" value="{val=0.0,val=0.1*x}"/>
+  <Parameter name="step size" type="double" value="1.0"/>
+  <Parameter name="num steps" type="unsigned int" value="1"/>
+  <Parameter name="regression: val" type="double" value="-0.001830254279844"/>
+  <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/rectangle.dmg"/>
-    <Parameter name="mesh file" type="string" value="meshes/rectangle-serial.smb"/>
+    <Parameter name="mesh file" type="string" value="meshes/rectangle.smb"/>
     <Parameter name="assoc file" type="string" value="meshes/rectangle.txt"/>
     <Parameter name="ws size" type="unsigned int" value="100"/>
     <Parameter name="p order" type="unsigned int" value="1"/>
@@ -19,7 +19,7 @@
   <ParameterList name="mechanics">
     <Parameter name="model" type="string" value="linear elastic"/>
     <ParameterList name="rectangle">
-      <Parameter name="E" type="double" value="1000.0"/>
+      <Parameter name="E" type="double" value="1.0e+5"/>
       <Parameter name="nu" type="double" value="0.25"/>
       <Parameter name="rho" type="double" value="1.0"/>
     </ParameterList>
@@ -27,6 +27,7 @@
       <Parameter name="bc 1" type="Array(string)" value="{ux,left,val=0.0}"/>
       <Parameter name="bc 2" type="Array(string)" value="{uy,left,val=0.0}"/>
     </ParameterList>
+    <Parameter name="body force" type="Array(string)" value="{val=0.0,val=-1.0}"/>
   </ParameterList>
 
   <ParameterList name="linear algebra">
@@ -38,7 +39,7 @@
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_elast_trapezoid_2D"/>
+    <Parameter name="out file" type="string" value="out_elast_continuation_body_force_2D"/>
   </ParameterList>
 
 </ParameterList>

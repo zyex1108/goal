@@ -3,6 +3,7 @@
 #include "mechanics.hpp"
 #include "solution_info.hpp"
 #include "primal_problem.hpp"
+#include "adapter.hpp"
 #include "output.hpp"
 #include "assert_param.hpp"
 #include "control.hpp"
@@ -23,6 +24,7 @@ static RCP<ParameterList> get_valid_params()
   p->sublist("mesh");
   p->sublist("mechanics");
   p->sublist("linear algebra");
+  p->sublist("adapt");
   p->sublist("output");
   return p;
 }
@@ -53,6 +55,8 @@ SolverContinuation::SolverContinuation(RCP<const ParameterList> p) :
   mechanics = mechanics_create(params, mesh, enable_dynamics);
   sol_info = sol_info_create(mesh, enable_dynamics);
   primal = primal_create(params, mesh, mechanics, sol_info);
+  if (params->isSublist("adapt"))
+    adapter = adapter_create(params, mesh, mechanics, sol_info);
   output = output_create(params, mesh, mechanics, sol_info);
   primal->set_coeffs(0.0, 0.0, 1.0);
   t_old = params->get<double>("initial time");
@@ -85,6 +89,8 @@ void SolverContinuation::solve()
     primal->set_time(t_new, t_old);
     primal->solve();
     output->write(t_new);
+    if (Teuchos::nonnull(adapter))
+      adapter->adapt(step);
     t_old = t_new;
     t_new = t_new + dt;
     mechanics->update_state();

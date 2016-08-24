@@ -9,16 +9,11 @@
 #include "ev_gather_solution.hpp"
 #include "ev_dof_interpolation.hpp"
 #include "ev_kinematics.hpp"
-#include "ev_model_elastic.hpp"
-#include "ev_model_j2.hpp"
-#include "ev_model_creep.hpp"
 #include "ev_first_pk.hpp"
 #include "ev_elem_size.hpp"
 #include "ev_mechanics_residual.hpp"
 #include "ev_pressure_residual.hpp"
 #include "ev_scatter_residual.hpp"
-#include "ev_qoi_avg_displacement.hpp"
-#include "ev_scatter_qoi.hpp"
 
 namespace goal {
 
@@ -106,46 +101,7 @@ void goal::Mechanics::register_volumetric(
   RCP<const ParameterList> tp;
   if (have_temperature) tp = rcpFromRef(params->sublist("temperature"));
 
-  if (model == "linear elastic") { /* elastic model */
-    small_strain = true;
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<StateFields> >("State Fields", state_fields);
-    p->set<RCP<const ParameterList> >("Material Params", mp);
-    p->set<RCP<const ParameterList> >("Temperature Params", tp);
-    p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
-    p->set<std::string>("Cauchy Name", "cauchy");
-    ev = rcp(new ModelElastic<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-  }
-
-  else if (model == "j2") { /* j2 model */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<StateFields> >("State Fields", state_fields);
-    p->set<RCP<const ParameterList> >("Material Params", mp);
-    p->set<RCP<const ParameterList> >("Temperature Params", tp);
-    p->set<std::string>("Def Grad Name", "F");
-    p->set<std::string>("Det Def Grad Name", "J");
-    p->set<std::string>("Cauchy Name", "cauchy");
-    ev = rcp(new ModelJ2<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-  }
-
-  else if (model == "creep") { /* creep model */
-    RCP<ParameterList> p = rcp(new ParameterList);
-    p->set<RCP<Layouts> >("Layouts", dl);
-    p->set<RCP<StateFields> >("State Fields", state_fields);
-    p->set<std::string>("Def Grad Name", "F");
-    p->set<std::string>("Det Def Grad Name", "J");
-    p->set<std::string>("Cauchy Name", "cauchy");
-    p->set<RCP<const ParameterList> >("Material Params", mp);
-    ev = rcp(new ModelCreep<EvalT, GoalTraits>(*p));
-    fm->template registerEvaluator<EvalT>(ev);
-  }
-
-  else
-    fail("unknown material model: %s", model.c_str());
+  this->template register_model<EvalT>(set, mp, tp, fm);
 
   { /* first piola kirchhoff stress tensor */
     RCP<ParameterList> p = rcp(new ParameterList);
@@ -165,6 +121,7 @@ void goal::Mechanics::register_volumetric(
   { /* mechanics residual */
     RCP<ParameterList> p = rcp(new ParameterList);
     p->set<RCP<Layouts> >("Layouts", dl);
+    p->set<RCP<Mesh> >("Mesh", mesh);
     p->set<std::string>("BF Name", "BF");
     p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
     p->set<std::string>("Weighted Dv Name", "wDv");
@@ -173,6 +130,13 @@ void goal::Mechanics::register_volumetric(
     if (enable_dynamics) {
       p->set<double>("Density", mp->get<double>("rho"));
       p->set<Teuchos::Array<std::string> >("Acc Names", fields["acc"]);
+    }
+    p->set<bool>("Have Body Force", have_body_force);
+    if (have_body_force) {
+      Teuchos::Array<std::string> body_force;
+      body_force = params->get<Teuchos::Array<std::string> >("body force");
+      p->set<Teuchos::Array<std::string> >("Body Force", body_force);
+      p->set<double>("Density", mp->get<double>("rho"));
     }
     ev = rcp(new MechanicsResidual<EvalT, GoalTraits>(*p));
     fm->template registerEvaluator<EvalT>(ev);
@@ -214,38 +178,8 @@ void goal::Mechanics::register_volumetric(
     fm->requireField<EvalT>(tag);
   }
 
-  if (is_dual) {
-
-    /* get the quantity of interest parameters */
-    assert_sublist(params, "qoi");
-    RCP<const ParameterList> qoi_params = rcpFromRef(params->sublist("qoi"));
-    std::string qoi_name = qoi_params->get<std::string>("name");
-
-    if (qoi_name == "avg displacement") {
-      RCP<ParameterList> p = rcp(new ParameterList);
-      p->set<RCP<Layouts> >("Layouts", dl);
-      p->set<Teuchos::Array<std::string> >("Disp Names", fields["disp"]);
-      p->set<std::string>("Weighted Dv Name", "wDv");
-      p->set<std::string>("Avg Displacement Name", qoi_name);
-      ev = rcp(new QoIAvgDisplacement<EvalT, GoalTraits>(*p));
-      fm->template registerEvaluator<EvalT>(ev);
-    }
-
-    else
-      fail("unknown qoi name: %s", qoi_name.c_str());
-
-    { /* scatter qoi */
-      RCP<ParameterList> p = rcp(new ParameterList);
-      p->set<RCP<Layouts> >("Layouts", dl);
-      p->set<RCP<Mesh> >("Mesh", mesh);
-      p->set<std::string>("QoI Name", qoi_name);
-      ev = rcp(new ScatterQoI<EvalT, GoalTraits>(*p));
-      fm->template registerEvaluator<EvalT>(ev);
-      PHX::Tag<typename EvalT::ScalarT> tag("Scatter QoI", dl->dummy);
-      fm->requireField<EvalT>(tag);
-    }
-
-  }
+  if (is_dual)
+    this->template register_qoi<EvalT>(set, fm);
 
 }
 

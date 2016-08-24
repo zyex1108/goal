@@ -4,6 +4,7 @@
 #include "solution_info.hpp"
 #include "initial_condition.hpp"
 #include "primal_problem.hpp"
+#include "linear_solver.hpp"
 #include "output.hpp"
 #include "assert_param.hpp"
 #include "control.hpp"
@@ -67,10 +68,23 @@ void SolverTrapezoid::solve()
 {
   mechanics->build_primal();
 
-  /* create the predictor vectors */
+  /* get some information */
+  RCP<const ParameterList> p = rcpFromRef(params->sublist("linear algebra"));
+  unsigned max_iters = p->get<unsigned>("nonlinear: max iters");
+  double tolerance = p->get<double>("nonlinear: tolerance");
+
+  /* get the solution information */
+  RCP<Vector> u = sol_info->owned_solution->getVectorNonConst(0);
+  RCP<Vector> v = sol_info->owned_solution->getVectorNonConst(1);
+  RCP<Vector> a = sol_info->owned_solution->getVectorNonConst(2);
+  RCP<Vector> r = sol_info->owned_residual;
+  RCP<Matrix> J = sol_info->owned_jacobian;
+
+  /* create needed vectors */
   RCP<const Map> map = mesh->get_owned_map();
-  x_pred = rcp(new Vector(map));
-  v_pred = rcp(new Vector(map));
+  RCP<Vector> u_a = rcp(new Vector(map));
+  RCP<Vector> u_v = rcp(new Vector(map));
+  RCP<Vector> du = rcp(new Vector(map));
 
   /* time loop */
   for (unsigned step=1; step <= num_steps; ++step) {
@@ -84,26 +98,38 @@ void SolverTrapezoid::solve()
     double beta = 2.0/dt;
     double gamma = 1.0;
 
-    /* get the solution vectors */
-    RCP<Vector> x = sol_info->owned_solution->getVectorNonConst(0);
-    RCP<Vector> v = sol_info->owned_solution->getVectorNonConst(1);
-    RCP<Vector> a = sol_info->owned_solution->getVectorNonConst(2);
-
     /* predictor phase */
-    x_pred->assign(*x);
-    x_pred->update(dt, *v, alpha, *a, 1.0);
-    v_pred->assign(*v);
-    v_pred->update(beta, *v, 1.0);
-    a->assign(*v_pred);
+    u_a->assign(*u);
+    u_a->update(dt, *v, ((dt*dt)/4.0), *a, 1.0);
+    u_v->assign(*u);
+    u_v->update((dt/2.0), *v, 1.0);
 
     /* solve the primal model */
     primal->set_coeffs(alpha, beta, gamma);
     primal->set_time(t_new, t_old);
-    primal->solve();
+    unsigned iter=1;
+    bool converged = false;
+    while ((iter <= max_iters) && (! converged)) {
+      print(" (%d) newton iteration", iter);
+      a->update(alpha, *u, -alpha, *u_a, 0.0);
+      v->update(beta, *u, -beta, *u_v, 0.0);
+      primal->compute_jacobian();
+      r->scale(-1.0);
+      du->putScalar(0.0);
+      solve_linear_system(p, J, du, r);
+      u->update(1.0, *du, 1.0);
+      primal->compute_residual();
+      double norm = r->norm2();
+      print("  ||r|| = %e", norm);
+      if (norm < tolerance) converged = true;
+      iter++;
+    }
+    if ((iter > max_iters) && (! converged))
+      fail("newton's method failed in %u iterations", max_iters);
 
     /* corrector phase */
-    a->update(alpha, *x, -alpha, *x_pred, 0.0);
-    v->update(beta, *x, -beta, *v_pred, 0.0);
+    a->update(alpha, *u, -alpha, *u_a, 0.0);
+    v->update(beta, *u, -beta, *u_v, 0.0);
 
     /* write output */
     output->write(t_new);
