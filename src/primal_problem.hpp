@@ -31,6 +31,10 @@ class PrimalProblem
 
     void set_coeffs(double alpha, double beta, double gamma);
 
+    void compute_residual();
+
+    void compute_jacobian();
+
     void solve();
 
   private:
@@ -49,9 +53,6 @@ class PrimalProblem
 
     double tolerance;
     unsigned max_iters;
-
-    void compute_residual();
-    void compute_jacobian();
 
 };
 
