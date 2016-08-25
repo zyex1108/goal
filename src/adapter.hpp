@@ -4,6 +4,10 @@
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_Array.hpp>
 
+namespace ma {
+class Input;
+}
+
 namespace Teuchos {
 class ParameterList;
 }
@@ -41,7 +45,7 @@ class Adapter
     unsigned max_iters;
     Teuchos::Array<std::string> load_balance;
 
-    void pre_adapt();
+    ma::Input* pre_adapt();
     void post_adapt();
 };
 
