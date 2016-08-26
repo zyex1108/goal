@@ -47,7 +47,8 @@ Adapter::Adapter(
   mesh(m),
   mechanics(mech),
   sol_info(s),
-  max_iters(0)
+  max_iters(0),
+  size_field(0)
 {
   validate_params(params, mesh);
   max_iters = params->get<unsigned>("max iters");
@@ -67,8 +68,8 @@ ma::Input* Adapter::create_input()
   if (size_field_type == "uniform")
     in = ma::configureUniformRefine(mesh->get_apf_mesh());
   else {
-    ma::IsotropicFunction* f = get_size_field(params, mesh);
-    in = ma::configure(mesh->get_apf_mesh(), f);
+    size_field = get_size_field(params, mesh);
+    in = ma::configure(mesh->get_apf_mesh(), size_field);
   }
   in->shouldRunPreZoltan = ("zoltan" == load_balance[0]);
   in->shouldRunPreParma = ("parma" == load_balance[0]);
@@ -89,6 +90,7 @@ void Adapter::adapt(unsigned step_number)
 
 void Adapter::post_adapt()
 {
+  apf::destroyField(size_field);
   mesh->update();
   sol_info->resize(mesh, false);
   AttachInfo info = {mesh, mechanics, sol_info};

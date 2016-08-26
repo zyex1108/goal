@@ -8,6 +8,10 @@ namespace ma {
 class Input;
 }
 
+namespace apf {
+class Field;
+}
+
 namespace Teuchos {
 class ParameterList;
 }
@@ -43,6 +47,7 @@ class Adapter
     RCP<SolutionInfo> sol_info;
 
     unsigned max_iters;
+    apf::Field* size_field;
     std::string size_field_type;
     Teuchos::Array<std::string> load_balance;
 
