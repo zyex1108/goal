@@ -43,6 +43,7 @@ class Adapter
     RCP<SolutionInfo> sol_info;
 
     unsigned max_iters;
+    std::string size_field_type;
     Teuchos::Array<std::string> load_balance;
 
     ma::Input* pre_adapt();

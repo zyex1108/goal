@@ -51,6 +51,7 @@ Adapter::Adapter(
 {
   validate_params(params, mesh);
   max_iters = params->get<unsigned>("max iters");
+  size_field_type = params->sublist("size field").get<std::string>("type");
   load_balance = params->get<Teuchos::Array<std::string> >("lb");
 }
 
@@ -58,14 +59,19 @@ ma::Input* Adapter::pre_adapt()
 {
   AttachInfo info = {mesh, mechanics, sol_info};
   attach_solutions_to_shape(info);
-  ma::IsotropicFunction* f = get_size_field(params, mesh);
-  ma::Input* in = ma::configure(mesh->get_apf_mesh(), f);
+  ma::Input* in;
+  if (size_field_type == "uniform")
+    in = ma::configureUniformRefine(mesh->get_apf_mesh());
+  else {
+    ma::IsotropicFunction* f = get_size_field(params, mesh);
+    in = ma::configure(mesh->get_apf_mesh(), f);
+  }
   in->shouldRunPreZoltan = ("zoltan" == load_balance[0]);
   in->shouldRunPreParma = ("parma" == load_balance[0]);
   in->shouldRunMidZoltan = ("zoltan" == load_balance[1]);
   in->shouldRunMidParma = ("parma" == load_balance[1]);
   in->shouldRunPostZoltan = ("zoltan" == load_balance[2]);
-  in->shouldRunPostZoltan = ("parma" == load_balance[2]);
+  in->shouldRunPostParma = ("parma" == load_balance[2]);
   return in;
 }
 
