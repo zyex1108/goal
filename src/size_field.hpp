@@ -11,6 +11,10 @@ namespace ma {
 class IsotropicFunction;
 }
 
+namespace apf {
+class Field;
+}
+
 namespace goal {
 
 using Teuchos::RCP;
@@ -22,7 +26,7 @@ void validate_size_params(
     RCP<const ParameterList> p,
     RCP<Mesh> mesh);
 
-ma::IsotropicFunction* get_size_field(
+apf::Field* get_size_field(
     RCP<const ParameterList> p,
     RCP<Mesh> mesh);
 
