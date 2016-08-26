@@ -46,7 +46,8 @@ class Adapter
     std::string size_field_type;
     Teuchos::Array<std::string> load_balance;
 
-    ma::Input* pre_adapt();
+    ma::Input* create_input();
+    void pre_adapt();
     void post_adapt();
 };
 

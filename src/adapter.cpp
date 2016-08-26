@@ -55,10 +55,14 @@ Adapter::Adapter(
   load_balance = params->get<Teuchos::Array<std::string> >("lb");
 }
 
-ma::Input* Adapter::pre_adapt()
+void Adapter::pre_adapt()
 {
   AttachInfo info = {mesh, mechanics, sol_info};
   attach_solutions_to_shape(info);
+}
+
+ma::Input* Adapter::create_input()
+{
   ma::Input* in;
   if (size_field_type == "uniform")
     in = ma::configureUniformRefine(mesh->get_apf_mesh());
@@ -77,7 +81,8 @@ ma::Input* Adapter::pre_adapt()
 
 void Adapter::adapt(unsigned step_number)
 {
-  ma::Input* in = pre_adapt();
+  pre_adapt();
+  ma::Input* in = create_input();
   ma::adapt(in);
   post_adapt();
 }
