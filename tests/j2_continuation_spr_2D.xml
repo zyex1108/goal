@@ -4,7 +4,7 @@
   <Parameter name="initial time" type="double" value="0.0"/>
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
-  <Parameter name="regression: val" type="double" value="0.002639334287715"/>
+  <Parameter name="regression: val" type="double" value="0.002070770401485"/>
   <Parameter name="regression: tol" type="double" value="1.0e-12"/>
 
   <ParameterList name="mesh">
@@ -41,14 +41,16 @@
 
   <ParameterList name="adapt">
     <ParameterList name="size field">
-      <Parameter name="type" type="string" value="uniform"/>
+      <Parameter name="type" type="string" value="spr"/>
+      <Parameter name="variable" type="string" value="cauchy"/>
+      <Parameter name="target elements" type="unsigned int" value="800"/>
     </ParameterList>
     <Parameter name="max iters" type="unsigned int" value="1"/>
     <Parameter name="lb" type="Array(string)" value="{none,none,none}"/>
   </ParameterList>
 
   <ParameterList name="output">
-    <Parameter name="out file" type="string" value="out_j2_continuation_uniform_2D"/>
+    <Parameter name="out file" type="string" value="out_j2_continuation_spr_2D"/>
   </ParameterList>
 
 </ParameterList>

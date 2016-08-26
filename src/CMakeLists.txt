@@ -21,6 +21,7 @@ primal_problem.hpp
 dual_problem.hpp
 linear_solver.hpp
 adapter.hpp
+size_field.hpp
 output.hpp
 ev_basis_functions.hpp
 ev_gather_solution.hpp
@@ -66,6 +67,7 @@ primal_problem.cpp
 dual_problem.cpp
 linear_solver.cpp
 adapter.cpp
+size_field.cpp
 output.cpp
 ev_basis_functions.cpp
 ev_gather_solution.cpp

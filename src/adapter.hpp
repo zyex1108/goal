@@ -4,6 +4,14 @@
 #include <Teuchos_RCP.hpp>
 #include <Teuchos_Array.hpp>
 
+namespace ma {
+class Input;
+}
+
+namespace apf {
+class Field;
+}
+
 namespace Teuchos {
 class ParameterList;
 }
@@ -39,8 +47,11 @@ class Adapter
     RCP<SolutionInfo> sol_info;
 
     unsigned max_iters;
+    apf::Field* size_field;
+    std::string size_field_type;
     Teuchos::Array<std::string> load_balance;
 
+    ma::Input* create_input();
     void pre_adapt();
     void post_adapt();
 };

@@ -89,7 +89,7 @@ void SolverContinuation::solve()
     primal->set_time(t_new, t_old);
     primal->solve();
     output->write(t_new);
-    if (Teuchos::nonnull(adapter))
+    if (Teuchos::nonnull(adapter) && step < num_steps)
       adapter->adapt(step);
     t_old = t_new;
     t_new = t_new + dt;
