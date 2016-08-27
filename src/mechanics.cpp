@@ -120,6 +120,14 @@ void Mechanics::build_dual()
 void Mechanics::build_error()
 {
   double t0 = time();
+  set_error();
+  tyepdef GoalTraits::Forward F;
+  vfms.resize(mesh->get_num_elem_sets());
+  for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
+    vfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
+    std::string const& set = mesh->get_elem_set_name(i);
+    register_volumetric<F>(set, vfms[i]);
+  }
   double t1 = time();
   print("error fields built in %f seconds", t1-t0);
 }
