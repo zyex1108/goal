@@ -121,7 +121,7 @@ void Mechanics::build_error()
 {
   double t0 = time();
   set_error();
-  tyepdef GoalTraits::Forward F;
+  typedef GoalTraits::Forward F;
   vfms.resize(mesh->get_num_elem_sets());
   for (unsigned i=0; i < mesh->get_num_elem_sets(); ++i) {
     vfms[i] = rcp(new PHX::FieldManager<GoalTraits>);
