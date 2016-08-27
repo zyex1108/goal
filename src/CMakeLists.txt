@@ -37,6 +37,7 @@ ev_pressure_residual.hpp
 ev_scatter_residual.hpp
 ev_qoi_avg_displacement.hpp
 ev_scatter_qoi.hpp
+ev_gather_dual.hpp
 ev_bc_dirichlet.hpp
 ev_bc_traction.hpp
 solver.hpp
@@ -83,6 +84,7 @@ ev_pressure_residual.cpp
 ev_scatter_residual.cpp
 ev_qoi_avg_displacement.cpp
 ev_scatter_qoi.cpp
+ev_gather_dual.cpp
 ev_bc_dirichlet.cpp
 ev_bc_traction.cpp
 solver.cpp
