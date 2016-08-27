@@ -25,6 +25,8 @@ see the [build instructions][4] wiki page.
 ### Configuration
 An example configuration script for Goal
 is located in [here][5] in the repository.
+Below, some useful information about
+important configuration options is given.
 
 #### GOAL_FAD_SIZE
 Default: `16`
@@ -57,11 +59,12 @@ sanity checks can be turned off.
 #### GOAL_TESTING
 Default: `OFF`
 
-A suite of simpler regression [tests][7]
+A suite of simple regression [tests][7]
 is provided with this repository for
-developers and to check build validity.
-This configuration option enables the
-ability to run these tests under CTest.
+developers, as well as to check build
+validity. This configuration option enables
+the ability to automatically run these tests
+under CTest.
 
 [0]: https://cmake.org
 [1]: https://www.mpich.org
