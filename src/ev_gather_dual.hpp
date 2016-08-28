@@ -22,9 +22,15 @@ PHX_EVALUATOR_CLASS(GatherDual)
     Teuchos::Array<std::string> names;
 
     unsigned num_nodes;
+    unsigned num_qps;
+    unsigned num_dims;
     unsigned num_eqs;
 
-    std::vector<PHX::MDField<ScalarT, Elem, Node> > z;
+    PHX::MDField<double, Elem, Node, QP> BF;
+    PHX::MDField<double, Elem, Node, QP, Dim> gBF;
+    std::vector<PHX::MDField<ScalarT, Elem, Node> > nodal;
+    std::vector<PHX::MDField<ScalarT, Elem, QP> > duals;
+    std::vector<PHX::MDField<ScalarT, Elem, QP, Dim> > gduals;
 
 PHX_EVALUATOR_CLASS_END
 
