@@ -19,6 +19,7 @@ state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
 dual_problem.hpp
+error_estimation.hpp
 linear_solver.hpp
 adapter.hpp
 size_field.hpp
@@ -68,6 +69,7 @@ mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
 dual_problem.cpp
+error_estimation.cpp
 linear_solver.cpp
 adapter.cpp
 size_field.cpp
