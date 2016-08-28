@@ -57,7 +57,6 @@ RCP<DualProblem> dual_create(
     RCP<Mechanics> mech,
     RCP<SolutionInfo> s);
 
-
 }
 
 #endif
