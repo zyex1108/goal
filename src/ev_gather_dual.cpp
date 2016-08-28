@@ -13,7 +13,7 @@ PHX_EVALUATOR_CTOR(GatherDual, p) :
   names   (p.get<Teuchos::Array<std::string> >("Dual Names")),
   BF      (p.get<std::string>("BF Name"), dl->node_qp_scalar)
 {
-  num_nodes = dl->node_qp_scalar->dimension(1);
+  num_nodes = dl->node_qp_vector->dimension(1);
   num_qps = dl->node_qp_vector->dimension(2);
   num_dims = dl->node_qp_vector->dimension(3);
   num_eqs = names.size();
