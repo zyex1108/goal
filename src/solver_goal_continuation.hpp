@@ -10,6 +10,7 @@ class Mechanics;
 class SolutionInfo;
 class PrimalProblem;
 class DualProblem;
+class ErrorEstimation;
 class Output;
 
 class SolverGoalContinuation : public Solver
@@ -24,6 +25,7 @@ class SolverGoalContinuation : public Solver
     RCP<SolutionInfo> sol_info;
     RCP<PrimalProblem> primal;
     RCP<DualProblem> dual;
+    RCP<ErrorEstimation> error;
     RCP<Output> output;
     double t_old;
     double t_new;
