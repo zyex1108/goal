@@ -6,7 +6,7 @@
 #include "assert_param.hpp"
 
 #include "ev_gather_dual.hpp"
-#include "ev_dof_interpolation.hpp"
+#include "ev_mechanics_error.hpp"
 
 static Teuchos::Array<std::string> get_dual_names(
     Teuchos::Array<std::string> const& names)
