@@ -11,7 +11,7 @@ using Teuchos::ArrayRCP;
 using Teuchos::ParameterList;
 
 class Mesh;
-class Layouts;
+struct Layouts;
 
 PHX_EVALUATOR_CLASS(GatherDual)
 
