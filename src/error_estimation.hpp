@@ -1,5 +1,5 @@
-#ifndef goal_dual_problem_hpp
-#define goal_dual_problem_hpp
+#ifndef goal_error_estimation_hpp
+#define goal_error_estimation_hpp
 
 #include <Teuchos_RCP.hpp>
 
@@ -17,11 +17,11 @@ class Mesh;
 class Mechanics;
 class SolutionInfo;
 
-class DualProblem
+class ErrorEstimation
 {
   public:
 
-    DualProblem(
+    ErrorEstimation(
         RCP<const ParameterList> p,
         RCP<Mesh> m,
         RCP<Mechanics> mech,
@@ -29,9 +29,7 @@ class DualProblem
 
     void set_time(double current, double previous);
 
-    void set_coeffs(double alpha, double beta, double gamma);
-
-    void solve();
+    void localize();
 
   private:
 
@@ -43,15 +41,11 @@ class DualProblem
     double t_new;
     double t_old;
 
-    double alpha;
-    double beta;
-    double gamma;
-
-    void compute_jacobian();
+    void compute_error();
 
 };
 
-RCP<DualProblem> dual_create(
+RCP<ErrorEstimation> error_create(
     RCP<const ParameterList> p,
     RCP<Mesh> m,
     RCP<Mechanics> mech,

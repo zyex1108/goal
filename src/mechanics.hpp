@@ -96,6 +96,9 @@ class Mechanics
     void register_qoi(std::string const& set, FieldManager fm);
 
     template <typename EvalT>
+    void register_error(std::string const& set, FieldManager fm);
+
+    template <typename EvalT>
     void register_neumann(FieldManager fm);
 
     template <typename EvalT>

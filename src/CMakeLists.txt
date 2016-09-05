@@ -19,6 +19,7 @@ state_fields.hpp
 mechanics.hpp
 primal_problem.hpp
 dual_problem.hpp
+error_estimation.hpp
 linear_solver.hpp
 adapter.hpp
 size_field.hpp
@@ -37,6 +38,8 @@ ev_pressure_residual.hpp
 ev_scatter_residual.hpp
 ev_qoi_avg_displacement.hpp
 ev_scatter_qoi.hpp
+ev_gather_dual.hpp
+ev_mechanics_error.hpp
 ev_bc_dirichlet.hpp
 ev_bc_traction.hpp
 solver.hpp
@@ -58,13 +61,15 @@ initial_condition.cpp
 solution_attachment.cpp
 state_fields.cpp
 mechanics.cpp
+mechanics_volumetric.cpp
 mechanics_model.cpp
 mechanics_qoi.cpp
-mechanics_volumetric.cpp
+mechanics_error.cpp
 mechanics_neumann.cpp
 mechanics_dirichlet.cpp
 primal_problem.cpp
 dual_problem.cpp
+error_estimation.cpp
 linear_solver.cpp
 adapter.cpp
 size_field.cpp
@@ -83,6 +88,8 @@ ev_pressure_residual.cpp
 ev_scatter_residual.cpp
 ev_qoi_avg_displacement.cpp
 ev_scatter_qoi.cpp
+ev_gather_dual.cpp
+ev_mechanics_error.cpp
 ev_bc_dirichlet.cpp
 ev_bc_traction.cpp
 solver.cpp

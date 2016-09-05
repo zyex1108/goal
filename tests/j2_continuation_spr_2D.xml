@@ -5,7 +5,7 @@
   <Parameter name="step size" type="double" value="1.0"/>
   <Parameter name="num steps" type="unsigned int" value="3"/>
   <Parameter name="regression: val" type="double" value="0.002070770401485"/>
-  <Parameter name="regression: tol" type="double" value="1.0e-12"/>
+  <Parameter name="regression: tol" type="double" value="1.0e-3"/>
 
   <ParameterList name="mesh">
     <Parameter name="geom file" type="string" value="meshes/square.dmg"/>

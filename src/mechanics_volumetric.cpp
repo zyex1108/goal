@@ -181,6 +181,9 @@ void goal::Mechanics::register_volumetric(
   if (is_dual)
     this->template register_qoi<EvalT>(set, fm);
 
+  if (is_error)
+    this->template register_error<EvalT>(set, fm);
+
 }
 
 /* ETI */

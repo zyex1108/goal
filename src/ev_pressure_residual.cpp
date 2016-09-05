@@ -16,7 +16,6 @@ static void validate_params(RCP<const ParameterList> p)
   assert_param(p, "nu");
 }
 
-
 PHX_EVALUATOR_CTOR(PressureResidual, p) :
   dl            (p.get<RCP<Layouts> >("Layouts")),
   params        (p.get<RCP<const ParameterList> >("Material Params")),
