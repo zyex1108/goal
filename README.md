@@ -1,4 +1,4 @@
-# Goal
+![Goal Loga][8]
 > Adaptive goal-oriented solid mechanics
 
 Goal is a mini-application written in C++11
@@ -74,3 +74,4 @@ under CTest.
 [5]: https://github.com/bgranzow/goal/blob/master/aux/do-config.sh
 [6]: https://en.wikipedia.org/wiki/Automatic_differentiation
 [7]: https://github.com/bgranzow/goal/tree/master/tests
+[8]: https://raw.githubusercontent.com/bgranzow/goal/master/aux/goal.png
